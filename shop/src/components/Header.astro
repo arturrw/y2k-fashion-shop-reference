@@ -1,19 +1,29 @@
 ---
 import CartButton from './CartButton';
-import { Search, User } from 'lucide-react';
+import { ChevronDown, Search, User } from 'lucide-react';
+import { NAV } from '../lib/catalog';
 
-const links = [
-  { label: 'All', href: '/shop' },
-  { label: 'Mens', href: '/shop?gender=men' },
-  { label: 'Womens', href: '/shop?gender=women' },
-  { label: 'Themed Collections', href: '/shop?category=accessories' },
-  { label: 'New Collections', href: '/shop' },
-];
 ---
 <header transition:persist="site-header" class="sticky top-0 z-50 flex h-16 items-center justify-between gap-4 border-b border-hairline bg-canvas px-6">
   <a href="/" class="font-display text-xl font-bold tracking-tight whitespace-nowrap">DCS Y2K</a>
-  <nav class="flex min-w-0 flex-1 items-center justify-center gap-6 overflow-x-auto">
-    {links.map((l) => <a href={l.href} class="text-sm font-semibold whitespace-nowrap">{l.label}</a>)}
+  <nav data-main-nav class="flex min-w-0 flex-1 items-center justify-center gap-6 overflow-x-auto md:overflow-visible">
+    {NAV.map((tab) => (
+      <div class="group relative">
+        <a href={tab.href} class="flex items-center gap-1 py-5 text-sm font-semibold whitespace-nowrap">
+          {tab.label}
+          <ChevronDown size={14} class="transition-transform group-focus-within:rotate-180 md:group-hover:rotate-180" />
+        </a>
+        <div data-dropdown class="animate-fade-in absolute top-full left-1/2 z-50 hidden -translate-x-1/2 pt-1 md:group-focus-within:block md:group-hover:block">
+          <ul class="min-w-[220px] rounded-md bg-canvas p-2 shadow-modal">
+            {tab.items.map((item) => (
+              <li>
+                <a href={item.href} class="block rounded-sm px-3 py-2 text-sm whitespace-nowrap hover:bg-surface-card">{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ))}
   </nav>
   <div class="flex items-center gap-3">
     <a href="/shop" aria-label="Search" class="flex size-10 items-center justify-center rounded-full hover:bg-secondary"><Search size={18} /></a>
@@ -21,3 +31,17 @@ const links = [
     <CartButton client:load />
   </div>
 </header>
+
+<script>
+  // The header persists across view transitions, so hide open menus on navigation
+  // and keep them hidden until the pointer leaves the nav.
+  const nav = () => document.querySelector<HTMLElement>('[data-main-nav]');
+  document.addEventListener('astro:before-swap', () => {
+    (document.activeElement as HTMLElement | null)?.blur();
+    nav()?.setAttribute('data-closed', '');
+  });
+  document.addEventListener('mouseout', (e) => {
+    const n = nav();
+    if (n && !n.contains(e.relatedTarget as Node | null)) n.removeAttribute('data-closed');
+  });
+</script>

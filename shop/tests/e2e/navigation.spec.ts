@@ -45,6 +45,44 @@ test.describe('header', () => {
   });
 });
 
+test.describe('header dropdown menus', () => {
+  const menus = [
+    ['All', 8, 'Sunglasses', '/shop?category=sunglasses'],
+    ['Mens', 8, 'Bags', '/shop?gender=men&category=bags'],
+    ['Womens', 8, 'Hoodies & jumpers', '/shop?gender=women&category=hoodies'],
+    ['Themed Collections', 5, 'Belts & beanies', '/shop?category=belts'],
+    ['New Collections', 2, 'Trending now', '/#trending'],
+  ] as const;
+
+  for (const [label, count, item, url] of menus) {
+    test(`"${label}" opens on hover with ${count} links and navigates`, async ({ page }) => {
+      await open(page, '/');
+      const tab = page.locator('[data-main-nav] > div', { has: page.getByRole('link', { name: label, exact: true }) });
+      const links = tab.locator('[data-dropdown] a');
+      await expect(links.first()).toBeHidden();
+      await tab.getByRole('link', { name: label, exact: true }).hover();
+      await expect(links).toHaveCount(count);
+      await expect(links.first()).toBeVisible();
+      await links.filter({ hasText: new RegExp(`^${item}$`) }).click();
+      await expect(page).toHaveURL(url);
+    });
+  }
+
+  test('menu opens with keyboard focus', async ({ page }) => {
+    await open(page, '/');
+    await page.getByRole('link', { name: 'Womens', exact: true }).focus();
+    await expect(page.getByRole('link', { name: "All women's" })).toBeVisible();
+  });
+
+  test('menu closes after navigating while the pointer stays over it', async ({ page }) => {
+    await open(page, '/');
+    await page.getByRole('link', { name: 'Mens', exact: true }).hover();
+    await page.getByRole('link', { name: 'Bags' }).first().click();
+    await expect(page).toHaveURL('/shop?gender=men&category=bags');
+    await expect(page.getByRole('link', { name: "All men's" })).toBeHidden();
+  });
+});
+
 test.describe('home', () => {
   test('hero buttons', async ({ page }) => {
     await open(page, '/');

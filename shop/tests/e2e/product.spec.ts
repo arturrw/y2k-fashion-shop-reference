@@ -5,7 +5,7 @@ test('product page content', async ({ page }) => {
   await open(page, '/product/w-jeans-1');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Low-Rise Butterfly Jeans');
   await expect(page.getByText('$52', { exact: true }).last()).toBeVisible();
-  await expect(page.getByText('Baggy jeans & jorts', { exact: true })).toBeVisible();
+  await expect(page.locator('main').getByText('Baggy jeans & jorts', { exact: true })).toBeVisible();
 });
 
 test('"Back to shop" returns to the catalog', async ({ page }) => {

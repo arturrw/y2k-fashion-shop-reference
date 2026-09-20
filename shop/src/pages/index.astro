@@ -33,7 +33,7 @@ const featured = await db.select().from(products).where(eq(products.featured, tr
       ))}
     </div>
 
-    <h2 class="mb-4 font-display text-[22px] font-semibold">Trending now</h2>
+    <h2 id="trending" class="mb-4 scroll-mt-20 font-display text-[22px] font-semibold">Trending now</h2>
     <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
       {featured.map((p, i) => <ProductCard product={p} index={i} />)}
     </div>

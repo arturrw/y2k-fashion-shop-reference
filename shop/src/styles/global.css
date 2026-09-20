@@ -77,3 +77,5 @@
   .reveal, .animate-fade-in, .animate-drawer, .animate-pop { animation: none; }
   * { transition-duration: 0.01ms !important; }
 }
+
+[data-main-nav][data-closed] [data-dropdown] { display: none !important; }
