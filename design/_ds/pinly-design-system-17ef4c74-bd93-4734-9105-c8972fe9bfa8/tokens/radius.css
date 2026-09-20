@@ -1,0 +1,5 @@
+:root{
+--radius-none:0px;--radius-sm:8px;--radius-md:16px;--radius-lg:32px;--radius-full:9999px;
+--shadow-modal:0 8px 32px rgba(0,0,0,.16),0 2px 8px rgba(0,0,0,.08);
+--scrim:rgba(0,0,0,.5);
+}
