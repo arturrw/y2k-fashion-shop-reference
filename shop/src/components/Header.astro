@@ -1,6 +1,8 @@
 ---
 import CartButton from './CartButton';
-import { ChevronDown, Search, User } from 'lucide-react';
+import SearchButton from './SearchButton';
+import AccountButton from './AccountButton';
+import { ChevronDown } from 'lucide-react';
 import { NAV } from '../lib/catalog';
 
 ---
@@ -26,8 +28,8 @@ import { NAV } from '../lib/catalog';
     ))}
   </nav>
   <div class="flex items-center gap-3">
-    <a href="/shop" aria-label="Search" class="flex size-10 items-center justify-center rounded-full hover:bg-secondary"><Search size={18} /></a>
-    <button aria-label="Account" class="flex size-10 items-center justify-center rounded-full hover:bg-secondary"><User size={18} /></button>
+    <SearchButton client:load />
+    <AccountButton client:load />
     <CartButton client:load />
   </div>
 </header>

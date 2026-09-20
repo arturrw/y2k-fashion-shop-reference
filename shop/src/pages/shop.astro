@@ -1,27 +1,32 @@
 ---
-import { and, eq, inArray, or } from 'drizzle-orm';
+import { and, eq, ilike, inArray, or } from 'drizzle-orm';
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { db } from '../db';
 import { products } from '../db/schema';
 import { ACCESSORY_CATS, CATEGORIES } from '../lib/catalog';
+import { likePattern } from '../lib/search';
 
 const gender = Astro.url.searchParams.get('gender') ?? 'all';
 const category = Astro.url.searchParams.get('category') ?? 'all';
+const q = (Astro.url.searchParams.get('q') ?? '').trim();
 
 const filters = [];
 if (gender === 'women' || gender === 'men') filters.push(or(eq(products.gender, gender), eq(products.gender, 'unisex')));
 if (category === 'accessories') filters.push(inArray(products.category, ACCESSORY_CATS));
 else if (category !== 'all') filters.push(eq(products.category, category));
 
+if (q) filters.push(or(ilike(products.name, likePattern(q)), ilike(products.description, likePattern(q))));
+
 const items = await db.select().from(products).where(and(...filters));
 
-const title = gender === 'women' ? "Women's Y2K" : gender === 'men' ? "Men's Y2K" : 'All Y2K';
+const title = q ? `Results for “${q}”` : gender === 'women' ? "Women's Y2K" : gender === 'men' ? "Men's Y2K" : 'All Y2K';
 const href = (g: string, c: string) => {
-  const q = new URLSearchParams();
-  if (g !== 'all') q.set('gender', g);
-  if (c !== 'all') q.set('category', c);
-  return `/shop${q.size ? '?' + q : ''}`;
+  const p = new URLSearchParams();
+  if (g !== 'all') p.set('gender', g);
+  if (c !== 'all') p.set('category', c);
+  if (q) p.set('q', q);
+  return `/shop${p.size ? '?' + p : ''}`;
 };
 const chip = (active: boolean) =>
   `inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold ${active ? 'bg-ink text-white' : 'bg-secondary hover:bg-secondary-pressed'}`;
@@ -38,7 +43,7 @@ const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
       {CATEGORIES.map((c) => <a href={href(gender, c.key)} class={chip(category === c.key)}>{c.label}</a>)}
     </div>
     {items.length === 0
-      ? <p class="py-16 text-center text-mute">Nothing here yet.</p>
+      ? <p class="py-16 text-center text-mute">{q ? `No products found for “${q}”.` : 'Nothing here yet.'}</p>
       : <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} />)}</div>}
   </div>
 </Layout>

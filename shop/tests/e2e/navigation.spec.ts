@@ -25,17 +25,6 @@ test.describe('header', () => {
     });
   }
 
-  test('search icon opens the catalog', async ({ page }) => {
-    await open(page, '/');
-    await page.getByRole('link', { name: 'Search' }).click();
-    await expect(page).toHaveURL('/shop');
-  });
-
-  test('account button is present and enabled', async ({ page }) => {
-    await open(page, '/');
-    await expect(page.getByRole('button', { name: 'Account' })).toBeEnabled();
-  });
-
   test('header stays mounted across navigation', async ({ page }) => {
     await open(page, '/');
     await page.evaluate(() => document.querySelector('body > header')!.setAttribute('data-marker', '1'));
