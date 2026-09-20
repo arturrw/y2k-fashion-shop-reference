@@ -1,0 +1,41 @@
+---
+import { and, eq, ne } from 'drizzle-orm';
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import AddToCart from '../../components/AddToCart';
+import { db } from '../../db';
+import { products } from '../../db/schema';
+import { CATEGORY_LABEL, SIZES } from '../../lib/catalog';
+
+const { id } = Astro.params;
+const [product] = await db.select().from(products).where(eq(products.id, id!));
+if (!product) return new Response(null, { status: 404 });
+
+const related = await db.select().from(products)
+  .where(and(eq(products.category, product.category), ne(products.id, product.id)))
+  .limit(4);
+---
+<Layout title={`${product.name} — DCS Y2K`}>
+  <div class="mx-auto max-w-[1280px] p-6">
+    <a href="/shop" class="text-sm font-semibold text-mute hover:text-ink">← Back to shop</a>
+    <div class="mt-6 flex flex-wrap gap-8">
+      <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-lg bg-gradient-to-br from-secondary to-stone">
+        {product.imageUrl && <img src={product.imageUrl} alt={product.name} class="size-full object-cover" />}
+      </div>
+      <div class="flex min-w-[280px] flex-[1_1_380px] flex-col gap-4">
+        <span class="text-xs font-medium tracking-wider text-mute uppercase">{CATEGORY_LABEL[product.category]}</span>
+        <h1 class="h-display text-[28px]">{product.name}</h1>
+        <span class="text-[22px] font-semibold">${product.price}</span>
+        <p class="max-w-[420px] leading-snug text-body">{product.description}</p>
+        <AddToCart client:load id={product.id} name={product.name} price={product.price} sizes={SIZES} />
+        <p class="text-[13px] text-mute">Free worldwide shipping · Ships in 2-4 business days</p>
+      </div>
+    </div>
+    {related.length > 0 && (
+      <>
+        <h2 class="mt-16 mb-4 font-display text-[22px] font-semibold">You may also like</h2>
+        <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-4">{related.map((p) => <ProductCard product={p} />)}</div>
+      </>
+    )}
+  </div>
+</Layout>

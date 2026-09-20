@@ -1,0 +1,46 @@
+---
+import { eq } from 'drizzle-orm';
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { db } from '../db';
+import { products } from '../db/schema';
+import { CATEGORIES } from '../lib/catalog';
+
+const featured = await db.select().from(products).where(eq(products.featured, true));
+---
+<Layout>
+  <div class="mx-auto max-w-[1280px] p-6">
+    <section class="mb-16 flex flex-wrap gap-8 rounded-md bg-surface-card p-8">
+      <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone"></div>
+      <div class="flex min-w-[280px] flex-[1_1_380px] flex-col justify-center gap-4">
+        <span class="text-xs font-medium tracking-wider text-mute uppercase">New drop</span>
+        <h1 class="font-display text-[44px] leading-[1.15] font-bold tracking-[-0.8px]">Cyber Y2K is back.</h1>
+        <p class="max-w-[420px] leading-snug text-body">Low-rise denim, chrome hoodies and bedazzled everything — hand-picked and shipped worldwide.</p>
+        <div class="mt-2 flex flex-wrap gap-3">
+          <a href="/shop?gender=women" class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-pressed">Shop women's</a>
+          <a href="/shop?gender=men" class="rounded-full bg-secondary px-5 py-2.5 text-sm font-semibold hover:bg-secondary-pressed">Shop men's</a>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="mb-4 font-display text-[22px] font-semibold">Shop by category</h2>
+    <div class="mb-16 flex gap-4 overflow-x-auto pb-2">
+      {CATEGORIES.map((c) => (
+        <a href={`/shop?category=${c.key}`} class="w-[140px] shrink-0">
+          <div class="mb-2 h-[180px] rounded-md bg-gradient-to-br from-secondary to-stone"></div>
+          <span class="text-sm font-semibold">{c.label}</span>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="mb-4 font-display text-[22px] font-semibold">Trending now</h2>
+    <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+      {featured.map((p) => <ProductCard product={p} />)}
+    </div>
+  </div>
+
+  <section class="flex flex-wrap items-center justify-between gap-6 bg-surface-dark px-8 py-12 text-white">
+    <h2 class="font-display text-[28px] font-bold tracking-[-1.2px]">Free worldwide shipping on every order.</h2>
+    <a href="/shop" class="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink">Shop now</a>
+  </section>
+</Layout>

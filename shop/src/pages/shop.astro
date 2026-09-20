@@ -1,0 +1,44 @@
+---
+import { and, eq, inArray, or } from 'drizzle-orm';
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { db } from '../db';
+import { products } from '../db/schema';
+import { ACCESSORY_CATS, CATEGORIES } from '../lib/catalog';
+
+const gender = Astro.url.searchParams.get('gender') ?? 'all';
+const category = Astro.url.searchParams.get('category') ?? 'all';
+
+const filters = [];
+if (gender === 'women' || gender === 'men') filters.push(or(eq(products.gender, gender), eq(products.gender, 'unisex')));
+if (category === 'accessories') filters.push(inArray(products.category, ACCESSORY_CATS));
+else if (category !== 'all') filters.push(eq(products.category, category));
+
+const items = await db.select().from(products).where(and(...filters));
+
+const title = gender === 'women' ? "Women's Y2K" : gender === 'men' ? "Men's Y2K" : 'All Y2K';
+const href = (g: string, c: string) => {
+  const q = new URLSearchParams();
+  if (g !== 'all') q.set('gender', g);
+  if (c !== 'all') q.set('category', c);
+  return `/shop${q.size ? '?' + q : ''}`;
+};
+const chip = (active: boolean) =>
+  `inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold ${active ? 'bg-ink text-white' : 'bg-secondary hover:bg-secondary-pressed'}`;
+const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
+---
+<Layout title={`${title} — DCS Y2K`}>
+  <div class="mx-auto max-w-[1280px] p-6">
+    <h1 class="h-display mb-6 text-[28px]">{title}</h1>
+    <div class="mb-4 flex flex-wrap gap-2">
+      {genders.map(([k, l]) => <a href={href(k, category)} class={chip(gender === k)}>{l}</a>)}
+    </div>
+    <div class="mb-8 flex flex-wrap gap-2">
+      <a href={href(gender, 'all')} class={chip(category === 'all')}>All</a>
+      {CATEGORIES.map((c) => <a href={href(gender, c.key)} class={chip(category === c.key)}>{c.label}</a>)}
+    </div>
+    {items.length === 0
+      ? <p class="py-16 text-center text-mute">Nothing here yet.</p>
+      : <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">{items.map((p) => <ProductCard product={p} />)}</div>}
+  </div>
+</Layout>
