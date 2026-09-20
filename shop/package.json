@@ -12,7 +12,9 @@
     "astro": "astro",
     "db:push": "node --env-file=.env node_modules/drizzle-kit/bin.cjs push",
     "db:seed": "tsx --env-file=.env scripts/seed.ts",
-    "db:up": "docker compose up -d"
+    "db:up": "docker compose up -d",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.6",
@@ -34,6 +36,7 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.23.15"
   }

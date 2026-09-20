@@ -23,6 +23,8 @@ export const cartOpen = atom(false);
 
 if (typeof window !== 'undefined') {
   cart.set(load());
+  // the drawer is persisted across view transitions, so close it on navigation
+  document.addEventListener('astro:before-swap', () => cartOpen.set(false));
   cart.listen((lines) => {
     try {
       localStorage.setItem(KEY, JSON.stringify(lines));

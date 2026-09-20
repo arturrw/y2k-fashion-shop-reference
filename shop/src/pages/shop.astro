@@ -39,6 +39,6 @@ const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
     </div>
     {items.length === 0
       ? <p class="py-16 text-center text-mute">Nothing here yet.</p>
-      : <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">{items.map((p) => <ProductCard product={p} />)}</div>}
+      : <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} />)}</div>}
   </div>
 </Layout>

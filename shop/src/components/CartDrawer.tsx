@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { Trash2, X } from 'lucide-react';
 import { cart, cartOpen, cartSubtotal, removeFromCart } from '../lib/cart';
@@ -6,13 +7,20 @@ export default function CartDrawer() {
   const lines = useStore(cart);
   const open = useStore(cartOpen);
   const subtotal = useStore(cartSubtotal);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && cartOpen.set(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000] bg-black/50" onClick={() => cartOpen.set(false)}>
+    <div className="animate-fade-in fixed inset-0 z-[1000] bg-black/50" onClick={() => cartOpen.set(false)}>
       <aside
         onClick={(e) => e.stopPropagation()}
-        className="absolute inset-y-0 right-0 flex w-[400px] max-w-[90vw] flex-col gap-4 overflow-y-auto bg-canvas p-6 shadow-modal"
+        className="animate-drawer absolute inset-y-0 right-0 flex w-[400px] max-w-[90vw] flex-col gap-4 overflow-y-auto bg-canvas p-6 shadow-modal"
         aria-label="Your bag"
       >
         <div className="flex items-center justify-between">

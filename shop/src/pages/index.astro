@@ -10,7 +10,7 @@ const featured = await db.select().from(products).where(eq(products.featured, tr
 ---
 <Layout>
   <div class="mx-auto max-w-[1280px] p-6">
-    <section class="mb-16 flex flex-wrap gap-8 rounded-md bg-surface-card p-8">
+    <section class="reveal mb-16 flex flex-wrap gap-8 rounded-md bg-surface-card p-8">
       <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone"></div>
       <div class="flex min-w-[280px] flex-[1_1_380px] flex-col justify-center gap-4">
         <span class="text-xs font-medium tracking-wider text-mute uppercase">New drop</span>
@@ -25,9 +25,9 @@ const featured = await db.select().from(products).where(eq(products.featured, tr
 
     <h2 class="mb-4 font-display text-[22px] font-semibold">Shop by category</h2>
     <div class="mb-16 flex gap-4 overflow-x-auto pb-2">
-      {CATEGORIES.map((c) => (
-        <a href={`/shop?category=${c.key}`} class="w-[140px] shrink-0">
-          <div class="mb-2 h-[180px] rounded-md bg-gradient-to-br from-secondary to-stone"></div>
+      {CATEGORIES.map((c, i) => (
+        <a href={`/shop?category=${c.key}`} class="group reveal w-[140px] shrink-0" style={`--i:${i}`}>
+          <div class="mb-2 h-[180px] rounded-md bg-gradient-to-br from-secondary to-stone transition-transform duration-300 group-hover:-translate-y-1"></div>
           <span class="text-sm font-semibold">{c.label}</span>
         </a>
       ))}
@@ -35,7 +35,7 @@ const featured = await db.select().from(products).where(eq(products.featured, tr
 
     <h2 class="mb-4 font-display text-[22px] font-semibold">Trending now</h2>
     <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
-      {featured.map((p) => <ProductCard product={p} />)}
+      {featured.map((p, i) => <ProductCard product={p} index={i} />)}
     </div>
   </div>
 

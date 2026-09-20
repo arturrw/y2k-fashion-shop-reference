@@ -1,12 +1,12 @@
 ---
 import type { Product } from '../db/schema';
-interface Props { product: Product }
-const { product: p } = Astro.props;
+interface Props { product: Product; index?: number }
+const { product: p, index = 0 } = Astro.props;
 ---
-<a href={`/product/${p.id}`} class="group relative block overflow-hidden rounded-md" style={`aspect-ratio:${p.aspect}`}>
+<a href={`/product/${p.id}`} class="group reveal relative block overflow-hidden rounded-md" style={`aspect-ratio:${p.aspect}; --i:${Math.min(index, 12)}`}>
   {p.imageUrl
-    ? <img src={p.imageUrl} alt={p.name} loading="lazy" class="size-full object-cover" />
-    : <div class="flex size-full items-end bg-gradient-to-br from-secondary via-surface-card to-stone p-4 text-sm font-semibold text-mute">{p.name}</div>}
+    ? <img src={p.imageUrl} alt={p.name} loading="lazy" transition:name={`product-${p.id}`} class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    : <div transition:name={`product-${p.id}`} class="flex size-full items-end bg-gradient-to-br from-secondary via-surface-card to-stone p-4 text-sm font-semibold text-mute transition-transform duration-500 group-hover:scale-105">{p.name}</div>}
   <span class="absolute bottom-3 left-3 rounded-full bg-white px-3 py-1 text-[13px] font-semibold shadow-sm">${p.price}</span>
   <span class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10"></span>
 </a>

@@ -23,6 +23,8 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgres://y2k:y2k@db:5432/y2k_shop
+    ports:
+      - "4321:4321" # direct access, bypassing nginx; remove in production
     depends_on:
       db:
         condition: service_healthy
