@@ -1,6 +1,7 @@
 export const CATEGORIES = [
   { key: 'jeans', label: 'Baggy jeans & jorts' },
   { key: 'hoodies', label: 'Hoodies & jumpers' },
+  { key: 'jackets', label: 'Jackets' },
   { key: 'tops', label: 'Crop tops & baby tees' },
   { key: 'sunglasses', label: 'Sunglasses' },
   { key: 'belts', label: 'Belts & beanies' },
