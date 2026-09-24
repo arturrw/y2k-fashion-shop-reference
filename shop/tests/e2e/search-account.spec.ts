@@ -134,3 +134,43 @@ test.describe('account', () => {
     await expect(dialog(page)).toBeVisible();
   });
 });
+
+test.describe('account registration', () => {
+  const registerDialog = (page: import('@playwright/test').Page) => page.getByRole('dialog', { name: 'Create account' });
+
+  test('validates email and password on the registration form', async ({ page }) => {
+    await open(page, '/');
+    await page.getByRole('button', { name: 'Account' }).click();
+    await page.getByRole('button', { name: 'Create an account' }).click();
+    await registerDialog(page).getByRole('button', { name: 'Create account' }).click();
+    await expect(page.getByRole('alert')).toHaveText('Enter a valid email address.');
+    await registerDialog(page).getByLabel('Email').fill('newuser@example.com');
+    await registerDialog(page).getByLabel('Password').fill('short');
+    await registerDialog(page).getByRole('button', { name: 'Create account' }).click();
+    await expect(page.getByRole('alert')).toHaveText('Password must be at least 8 characters.');
+  });
+
+  test('submitting a valid registration shows the "not available yet" notice', async ({ page }) => {
+    await open(page, '/');
+    await page.getByRole('button', { name: 'Account' }).click();
+    await page.getByRole('button', { name: 'Create an account' }).click();
+    await registerDialog(page).getByLabel('Email').fill('newuser@example.com');
+    await registerDialog(page).getByLabel('Password').fill('longenough1');
+    await registerDialog(page).getByRole('button', { name: 'Create account' }).click();
+    await expect(page.getByRole('status')).toContainText('aren’t available yet');
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('closing and reopening the registration modal resets its state', async ({ page }) => {
+    await open(page, '/');
+    await page.getByRole('button', { name: 'Account' }).click();
+    await page.getByRole('button', { name: 'Create an account' }).click();
+    await registerDialog(page).getByLabel('Email').fill('newuser@example.com');
+    await registerDialog(page).getByLabel('Password').fill('longenough1');
+    await registerDialog(page).getByRole('button', { name: 'Create account' }).click();
+    await expect(page.getByRole('status')).toBeVisible();
+    await registerDialog(page).getByRole('button', { name: 'Close' }).click();
+    await page.getByRole('button', { name: 'Account' }).click();
+    await expect(page.getByRole('dialog', { name: 'Log in' }).getByRole('status')).toHaveCount(0);
+  });
+});
