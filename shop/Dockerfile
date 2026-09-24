@@ -1,8 +1,17 @@
-# ---- deps + build ----
-FROM node:24-alpine AS build
+# ---- deps ----
+FROM node:24-alpine AS base
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --no-audit --no-fund
+
+# ---- dev: hot-reload dev server (source bind-mounted by docker-compose) ----
+FROM base AS dev
+ENV HOST=0.0.0.0
+EXPOSE 4321
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# ---- build ----
+FROM base AS build
 COPY . .
 RUN npm run build
 

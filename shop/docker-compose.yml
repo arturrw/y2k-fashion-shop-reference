@@ -29,6 +29,23 @@ services:
       db:
         condition: service_healthy
 
+  # local dev with hot reload: docker compose stop app && docker compose --profile dev up app-dev
+  app-dev:
+    build:
+      context: .
+      target: dev
+    environment:
+      DATABASE_URL: postgres://y2k:y2k@db:5432/y2k_shop
+    ports:
+      - "4321:4321"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["dev"]
+
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
