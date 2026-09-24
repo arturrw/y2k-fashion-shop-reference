@@ -27,7 +27,7 @@ const related = await db.select().from(products)
         <h1 class="h-display text-[28px]">{product.name}</h1>
         <span class="text-[22px] font-semibold">${product.price}</span>
         <p class="max-w-[420px] leading-snug text-body">{product.description}</p>
-        <AddToCart client:load id={product.id} name={product.name} price={product.price} sizes={SIZES} />
+        <AddToCart client:load id={product.id} name={product.name} price={product.price} sizes={SIZES} imageUrl={product.imageUrl} />
         <p class="text-[13px] text-mute">Free worldwide shipping · Ships in 2-4 business days</p>
       </div>
     </div>

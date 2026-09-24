@@ -92,6 +92,24 @@ test.describe('adding and removing', () => {
     await addProduct(page);
     await expect(drawer(page).getByRole('button', { name: 'Checkout' })).toBeEnabled();
   });
+
+  test('Checkout shows the "not available yet" notice', async ({ page }) => {
+    await addProduct(page);
+    await drawer(page).getByRole('button', { name: 'Checkout' }).click();
+    await expect(drawer(page).getByRole('status')).toContainText('isn’t available yet');
+  });
+
+  test('line item shows the product image', async ({ page }) => {
+    await addProduct(page, 'w-jeans-1', 'S');
+    await expect(drawer(page).getByRole('img', { name: 'Low-Rise Butterfly Jeans' })).toBeVisible();
+  });
+
+  test('line item is clickable and opens the product page', async ({ page }) => {
+    await addProduct(page, 'w-jeans-1', 'S');
+    await drawer(page).getByRole('link', { name: /Low-Rise Butterfly Jeans/ }).click();
+    await expect(page).toHaveURL('/product/w-jeans-1');
+    await expect(drawer(page)).toHaveCount(0);
+  });
 });
 
 test.describe('persistence', () => {

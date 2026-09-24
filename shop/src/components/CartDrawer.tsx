@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { Trash2, X } from 'lucide-react';
 import { cart, cartOpen, cartSubtotal, removeFromCart } from '../lib/cart';
@@ -7,11 +7,17 @@ export default function CartDrawer() {
   const lines = useStore(cart);
   const open = useStore(cartOpen);
   const subtotal = useStore(cartSubtotal);
+  const [checkoutMessage, setCheckoutMessage] = useState(false);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && cartOpen.set(false);
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) setCheckoutMessage(false);
   }, [open]);
 
   if (!open) return null;
@@ -41,14 +47,18 @@ export default function CartDrawer() {
           <div className="flex flex-col gap-4">
             {lines.map((l) => (
               <div key={l.id + l.size} className="flex items-center gap-3">
-                <div className="h-20 w-16 shrink-0 rounded-md bg-gradient-to-br from-secondary to-stone" />
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="text-sm font-semibold">{l.name}</span>
-                  <span className="text-[13px] text-mute">
-                    Size {l.size} · Qty {l.qty} · ${l.price * l.qty}
-                  </span>
-                </div>
-                <button aria-label={`Remove ${l.name}`} onClick={() => removeFromCart(l.id, l.size)} className="flex size-10 items-center justify-center rounded-full hover:bg-secondary">
+                <a href={`/product/${l.id}`} className="flex min-w-0 flex-1 items-center gap-3 rounded-md hover:opacity-80">
+                  <div className="h-20 w-16 shrink-0 overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone">
+                    {l.imageUrl && <img src={l.imageUrl} alt={l.name} className="size-full object-cover" />}
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="text-sm font-semibold">{l.name}</span>
+                    <span className="text-[13px] text-mute">
+                      Size {l.size} · Qty {l.qty} · ${l.price * l.qty}
+                    </span>
+                  </div>
+                </a>
+                <button aria-label={`Remove ${l.name}`} onClick={() => removeFromCart(l.id, l.size)} className="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-secondary">
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -57,7 +67,17 @@ export default function CartDrawer() {
               <span>Subtotal</span>
               <span>${subtotal}</span>
             </div>
-            <button className="w-full rounded-full bg-primary py-3 font-semibold text-white hover:bg-primary-pressed">Checkout</button>
+            <button
+              onClick={() => setCheckoutMessage(true)}
+              className="w-full rounded-full bg-primary py-3 font-semibold text-white hover:bg-primary-pressed"
+            >
+              Checkout
+            </button>
+            {checkoutMessage && (
+              <p role="status" className="rounded-md bg-surface-card p-3 text-sm text-body">
+                Checkout isn’t available yet — we’re working on it.
+              </p>
+            )}
           </div>
         )}
       </aside>

@@ -6,6 +6,7 @@ export interface CartLine {
   price: number;
   size: string;
   qty: number;
+  imageUrl?: string | null;
 }
 
 const KEY = 'y2k-cart';
