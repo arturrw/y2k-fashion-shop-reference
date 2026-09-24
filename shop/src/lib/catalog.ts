@@ -19,7 +19,17 @@ export const FOOTER_COLUMNS = [
   { title: 'Shop', links: ['Women', 'Men', 'New drops', 'Accessories'] },
   { title: 'Help', links: ['Shipping & returns', 'Size guide', 'Track my order', 'Contact us'] },
   { title: 'About', links: ['Our story', 'Sustainability', 'Careers'] },
-  { title: 'Follow', links: ['Instagram', 'TikTok', 'Pinterest'] },
+];
+
+export const SOCIAL_LINKS = [
+  { label: 'Instagram', href: 'https://instagram.com', icon: 'instagram' },
+  { label: 'TikTok', href: 'https://tiktok.com', icon: 'tiktok' },
+] as const;
+
+export const LEGAL_LINKS = [
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Service', href: '/terms-of-service' },
+  { label: 'Cookie Policy', href: '/cookie-policy' },
 ];
 
 export interface NavItem { label: string; href: string }

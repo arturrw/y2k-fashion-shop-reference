@@ -36,9 +36,9 @@ test.describe('header', () => {
 
 test.describe('header dropdown menus', () => {
   const menus = [
-    ['All', 8, 'Sunglasses', '/shop?category=sunglasses'],
-    ['Mens', 8, 'Bags', '/shop?gender=men&category=bags'],
-    ['Womens', 8, 'Hoodies & jumpers', '/shop?gender=women&category=hoodies'],
+    ['All', 9, 'Sunglasses', '/shop?category=sunglasses'],
+    ['Mens', 9, 'Bags', '/shop?gender=men&category=bags'],
+    ['Womens', 9, 'Hoodies & jumpers', '/shop?gender=women&category=hoodies'],
     ['Themed Collections', 5, 'Belts & beanies', '/shop?category=belts'],
     ['New Collections', 2, 'Trending now', '/#trending'],
   ] as const;
@@ -85,6 +85,7 @@ test.describe('home', () => {
   const categories = [
     ['Baggy jeans & jorts', 'jeans'],
     ['Hoodies & jumpers', 'hoodies'],
+    ['Jackets', 'jackets'],
     ['Crop tops & baby tees', 'tops'],
     ['Sunglasses', 'sunglasses'],
     ['Belts & beanies', 'belts'],
@@ -121,7 +122,31 @@ test.describe('footer & errors', () => {
     for (const title of ['Shop', 'Help', 'About', 'Follow']) {
       await expect(footer.getByRole('heading', { name: title })).toBeVisible();
     }
-    await expect(footer.getByRole('link')).toHaveCount(14);
+    await expect(footer.getByRole('link')).toHaveCount(16);
+  });
+
+  test('social icons are clickable and Pinterest is gone', async ({ page }) => {
+    await open(page, '/');
+    const footer = page.getByRole('contentinfo');
+    await expect(footer.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', /instagram/);
+    await expect(footer.getByRole('link', { name: 'TikTok' })).toHaveAttribute('href', /tiktok/);
+    await expect(footer.getByRole('link', { name: 'Pinterest' })).toHaveCount(0);
+  });
+
+  test('legal links go to Privacy Policy, Terms of Service and Cookie Policy', async ({ page }) => {
+    await open(page, '/');
+    const footer = page.getByRole('contentinfo');
+    const cases = [
+      ['Privacy Policy', '/privacy-policy'],
+      ['Terms of Service', '/terms-of-service'],
+      ['Cookie Policy', '/cookie-policy'],
+    ] as const;
+    for (const [label, url] of cases) {
+      await footer.getByRole('link', { name: label }).click();
+      await expect(page).toHaveURL(url);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(label);
+      await page.goBack();
+    }
   });
 
   test('unknown product returns 404', async ({ page }) => {
