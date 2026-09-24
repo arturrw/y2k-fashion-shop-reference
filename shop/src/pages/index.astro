@@ -7,11 +7,25 @@ import { products } from '../db/schema';
 import { CATEGORIES } from '../lib/catalog';
 
 const featured = await db.select().from(products).where(eq(products.featured, true));
+
+const HERO_IMAGE = 'https://i.pinimg.com/736x/36/ef/ea/36efea567b898c63124c5a898a353736.jpg';
+const CATEGORY_IMAGES: Record<string, string> = {
+  jeans: 'https://i.pinimg.com/736x/ba/66/7c/ba667c05430c38d76b4e918fb2200603.jpg',
+  hoodies: 'https://i.pinimg.com/736x/7f/a1/03/7fa103937eeb2a437ecd49e150d7f15f.jpg',
+  jackets: 'https://i.pinimg.com/736x/3a/eb/a9/3aeba9058b10e67d3b69ed2d2b19e0ff.jpg',
+  tops: 'https://i.pinimg.com/736x/b0/c5/c0/b0c5c040869f0bb564e2e80d79065d0a.jpg',
+  sunglasses: 'https://i.pinimg.com/736x/10/72/87/1072872677611a93d5894e509408e8bb.jpg',
+  belts: 'https://i.pinimg.com/736x/9f/81/59/9f815962878e4b3dbf5d0197462b5189.jpg',
+  jewelry: 'https://i.pinimg.com/736x/98/e4/15/98e415fff0a9d71959550f5eabc8f749.jpg',
+  bags: 'https://i.pinimg.com/736x/ec/ca/51/ecca51ddc5627694b27b5d996fbf5ad1.jpg',
+};
 ---
 <Layout>
   <div class="mx-auto max-w-[1280px] p-6">
     <section class="reveal mb-16 flex flex-wrap gap-8 rounded-md bg-surface-card p-8">
-      <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone"></div>
+      <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone">
+        <img src={HERO_IMAGE} alt="Cyber Y2K is back" loading="eager" class="size-full object-cover" />
+      </div>
       <div class="flex min-w-[280px] flex-[1_1_380px] flex-col justify-center gap-4">
         <span class="text-xs font-medium tracking-wider text-mute uppercase">New drop</span>
         <h1 class="font-display text-[44px] leading-[1.15] font-bold tracking-[-0.8px]">Cyber Y2K is back.</h1>
@@ -24,13 +38,24 @@ const featured = await db.select().from(products).where(eq(products.featured, tr
     </section>
 
     <h2 class="mb-4 font-display text-[22px] font-semibold">Shop by category</h2>
-    <div class="mb-16 flex gap-4 overflow-x-auto pb-2">
-      {CATEGORIES.map((c, i) => (
-        <a href={`/shop?category=${c.key}`} class="group reveal w-[140px] shrink-0" style={`--i:${i}`}>
-          <div class="mb-2 h-[180px] rounded-md bg-gradient-to-br from-secondary to-stone transition-transform duration-300 group-hover:-translate-y-1"></div>
-          <span class="text-sm font-semibold">{c.label}</span>
-        </a>
-      ))}
+    <div class="category-marquee mb-16 overflow-hidden">
+      <div class="category-track flex w-max gap-4 pb-2">
+        {[false, true].map((duplicate) =>
+          CATEGORIES.map((c) => (
+            <a
+              href={`/shop?category=${c.key}`}
+              class="group w-[140px] shrink-0"
+              aria-hidden={duplicate ? 'true' : undefined}
+              tabindex={duplicate ? -1 : undefined}
+            >
+              <div class="mb-2 h-[180px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone transition-transform duration-300 group-hover:-translate-y-1">
+                <img src={CATEGORY_IMAGES[c.key]} alt="" loading="lazy" class="size-full object-cover" />
+              </div>
+              <span class="text-sm font-semibold">{c.label}</span>
+            </a>
+          )),
+        )}
+      </div>
     </div>
 
     <h2 id="trending" class="mb-4 scroll-mt-20 font-display text-[22px] font-semibold">Trending now</h2>

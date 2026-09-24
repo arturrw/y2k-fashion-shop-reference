@@ -63,6 +63,10 @@
   60% { transform: scale(1.25); }
   100% { transform: scale(1); }
 }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 /* staggered entrance: set --i on the element */
 .reveal {
@@ -73,8 +77,16 @@
 .animate-drawer { animation: slide-in-right 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .animate-pop { animation: pop 0.3s ease-out both; }
 
+.category-track {
+  animation: marquee 28s linear infinite;
+}
+.category-marquee:hover .category-track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal, .animate-fade-in, .animate-drawer, .animate-pop { animation: none; }
+  .category-track { animation: none; }
   * { transition-duration: 0.01ms !important; }
 }
 
