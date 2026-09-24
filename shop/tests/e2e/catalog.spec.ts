@@ -5,9 +5,9 @@ const active = /bg-ink/;
 const chip = (page: Page, name: string) => page.locator('main').getByRole('link', { name, exact: true });
 const cards = (page: Page) => page.locator('main a[href^="/product/"]');
 
-test('shows all 21 products by default', async ({ page }) => {
+test('shows all 25 products by default', async ({ page }) => {
   await open(page, '/shop');
-  await expect(cards(page)).toHaveCount(21);
+  await expect(cards(page)).toHaveCount(25);
   await expect(chip(page, 'Everything')).toHaveClass(active);
   await expect(chip(page, 'All')).toHaveClass(active);
 });
@@ -19,7 +19,7 @@ test.describe('gender chips', () => {
     await expect(page).toHaveURL('/shop?gender=women');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText("Women's Y2K");
     await expect(chip(page, "Women's")).toHaveClass(active);
-    await expect(cards(page)).toHaveCount(15);
+    await expect(cards(page)).toHaveCount(17);
     await expect(page.locator('a[href^="/product/m-"]')).toHaveCount(0);
   });
 
@@ -27,7 +27,7 @@ test.describe('gender chips', () => {
     await open(page, '/shop');
     await chip(page, "Men's").click();
     await expect(page).toHaveURL('/shop?gender=men');
-    await expect(cards(page)).toHaveCount(14);
+    await expect(cards(page)).toHaveCount(16);
     await expect(page.locator('a[href^="/product/w-"]')).toHaveCount(0);
   });
 
@@ -35,7 +35,7 @@ test.describe('gender chips', () => {
     await open(page, '/shop?gender=men');
     await chip(page, 'Everything').click();
     await expect(page).toHaveURL('/shop');
-    await expect(cards(page)).toHaveCount(21);
+    await expect(cards(page)).toHaveCount(25);
   });
 });
 
@@ -43,7 +43,8 @@ test.describe('category chips', () => {
   const cases = [
     ['Baggy jeans & jorts', 'jeans', 4],
     ['Hoodies & jumpers', 'hoodies', 4],
-    ['Crop tops & baby tees', 'tops', 5],
+    ['Jackets', 'jackets', 2],
+    ['Crop tops & baby tees', 'tops', 7],
     ['Sunglasses', 'sunglasses', 2],
     ['Belts & beanies', 'belts', 2],
     ['Jewelry & rings', 'jewelry', 2],
@@ -63,7 +64,7 @@ test.describe('category chips', () => {
     await open(page, '/shop?category=bags');
     await chip(page, 'All').click();
     await expect(page).toHaveURL('/shop');
-    await expect(cards(page)).toHaveCount(21);
+    await expect(cards(page)).toHaveCount(25);
   });
 
   test('gender and category combine and are kept when switching', async ({ page }) => {
