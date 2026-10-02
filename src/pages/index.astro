@@ -2,12 +2,14 @@
 import { eq } from 'drizzle-orm';
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
+import { ratingSummaries } from '../lib/reviews';
 import { db } from '../db';
 import { products } from '../db/schema';
 import { CATEGORIES } from '../lib/catalog';
 import HeroSlider from '../components/HeroSlider';
 
 const featured = await db.select().from(products).where(eq(products.featured, true));
+const ratings = await ratingSummaries(featured.map((p) => p.id));
 
 const HERO_SLIDES = [
   { src: 'https://i.pinimg.com/1200x/36/ef/ea/36efea567b898c63124c5a898a353736.jpg', alt: 'Cyber Y2K is back' },
@@ -82,7 +84,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
       <a href="/shop" class="eyebrow link-line">View all</a>
     </div>
     <div class="grid grid-cols-2 gap-x-4 md:grid-cols-3 lg:grid-cols-4">
-      {featured.map((p, i) => <ProductCard product={p} index={i} />)}
+      {featured.map((p, i) => <ProductCard product={p} index={i} rating={ratings.get(p.id)} />)}
     </div>
   </section>
 

@@ -1,7 +1,8 @@
 ---
 import type { Product } from '../db/schema';
-interface Props { product: Product; index?: number }
-const { product: p, index = 0 } = Astro.props;
+import type { RatingSummary } from '../lib/reviews';
+interface Props { product: Product; index?: number; rating?: RatingSummary }
+const { product: p, index = 0, rating } = Astro.props;
 const no = String(index + 1).padStart(3, '0');
 ---
 <a href={`/product/${p.id}`} class="group reveal block" style={`--i:${Math.min(index, 12)}`}>
@@ -13,7 +14,14 @@ const no = String(index + 1).padStart(3, '0');
     <span aria-hidden="true" class="eyebrow absolute inset-x-0 bottom-0 translate-y-full bg-ink py-2.5 text-center text-canvas transition-transform duration-300 group-hover:translate-y-0">View piece</span>
   </div>
   <div class="flex items-start justify-between gap-3 pt-3 pb-6">
-    <p class="min-w-0 text-sm leading-snug">{p.name}</p>
+    <div class="min-w-0">
+      <p class="text-sm leading-snug">{p.name}</p>
+      {rating && rating.count > 0 && (
+        <p class="mt-1 font-mono text-xs text-mute" aria-label={`Rated ${rating.avg} out of 5 from ${rating.count} reviews`}>
+          <span class="text-ink">★</span> {rating.avg.toFixed(1)} ({rating.count})
+        </p>
+      )}
+    </div>
     <span class="shrink-0 font-mono text-sm">${p.price}</span>
   </div>
 </a>

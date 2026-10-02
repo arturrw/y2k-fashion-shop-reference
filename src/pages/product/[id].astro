@@ -3,6 +3,9 @@ import { and, eq, ne } from 'drizzle-orm';
 import Layout from '../../layouts/Layout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import AddToCart from '../../components/AddToCart';
+import ProductReviews from '../../components/ProductReviews';
+import RatingSummary from '../../components/RatingSummary';
+import { productReviews, ratingSummaries } from '../../lib/reviews';
 import { db } from '../../db';
 import { products } from '../../db/schema';
 import { CATEGORY_LABEL, SIZES } from '../../lib/catalog';
@@ -11,9 +14,13 @@ const { id } = Astro.params;
 const [product] = await db.select().from(products).where(eq(products.id, id!));
 if (!product) return new Response(null, { status: 404 });
 
-const related = await db.select().from(products)
-  .where(and(eq(products.category, product.category), ne(products.id, product.id)))
-  .limit(4);
+const [related, reviewList] = await Promise.all([
+  db.select().from(products)
+    .where(and(eq(products.category, product.category), eq(products.gender, product.gender), ne(products.id, product.id)))
+    .limit(4),
+  productReviews(product.id),
+]);
+const ratings = await ratingSummaries([product.id, ...related.map((p) => p.id)]);
 ---
 <Layout title={`${product.name} — DCS Y2K`}>
   <div class="grid border-b border-ink md:grid-cols-12">
@@ -25,6 +32,7 @@ const related = await db.select().from(products)
       <a href={`/shop?gender=${product.gender}&category=${product.category}`} class="eyebrow link-line self-start text-mute hover:text-ink">{CATEGORY_LABEL[product.category]}</a>
       <h1 class="h-display text-[44px] md:text-[60px]">{product.name}</h1>
       <span class="font-mono text-xl">${product.price}</span>
+      <RatingSummary client:load productId={product.id} initial={ratings.get(product.id) ?? { avg: 0, count: 0 }} />
       <p class="max-w-[420px] leading-relaxed text-body">{product.description}</p>
       <div class="flex flex-col gap-4 border-t border-hairline pt-6">
         <AddToCart client:load id={product.id} name={product.name} price={product.price} sizes={SIZES} imageUrl={product.imageUrl} />
@@ -37,10 +45,11 @@ const related = await db.select().from(products)
       <a href="/size-guide" class="eyebrow link-line self-start">Size guide →</a>
     </div>
   </div>
+  <ProductReviews client:idle productId={product.id} initial={reviewList} />
   {related.length > 0 && (
     <section class="px-4 py-12 md:px-8">
       <h2 class="h-display mb-8 border-b border-hairline pb-4 text-[40px]">You may also like</h2>
-      <div class="grid grid-cols-2 gap-x-4 md:grid-cols-4">{related.map((p, i) => <ProductCard product={p} index={i} />)}</div>
+      <div class="grid grid-cols-2 gap-x-4 md:grid-cols-4">{related.map((p, i) => <ProductCard product={p} index={i} rating={ratings.get(p.id)} />)}</div>
     </section>
   )}
 </Layout>

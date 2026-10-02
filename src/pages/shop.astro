@@ -2,6 +2,7 @@
 import { and, eq, ilike, inArray, or } from 'drizzle-orm';
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
+import { ratingSummaries } from '../lib/reviews';
 import { db } from '../db';
 import { products } from '../db/schema';
 import { ACCESSORY_CATS, CATEGORIES } from '../lib/catalog';
@@ -19,6 +20,7 @@ else if (category !== 'all') filters.push(eq(products.category, category));
 if (q) filters.push(or(ilike(products.name, likePattern(q)), ilike(products.description, likePattern(q))));
 
 const items = await db.select().from(products).where(and(...filters));
+const ratings = await ratingSummaries(items.map((p) => p.id));
 
 const title = q ? `Results for “${q}”` : gender === 'women' ? "Women's Y2K" : gender === 'men' ? "Men's Y2K" : 'All Y2K';
 const href = (g: string, c: string) => {
@@ -49,7 +51,7 @@ const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
     </div>
     {items.length === 0
       ? <p class="h-display py-24 text-center text-[32px] text-mute">{q ? `No products found for “${q}”.` : 'Nothing here yet.'}</p>
-      : <div class="mb-16 grid grid-cols-2 gap-x-4 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} />)}</div>}
+      : <div class="mb-16 grid grid-cols-2 gap-x-4 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} rating={ratings.get(p.id)} />)}</div>}
   </div>
 </Layout>
 

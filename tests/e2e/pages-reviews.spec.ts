@@ -80,3 +80,61 @@ test.describe('header & hero', () => {
     await expect(dots.nth(2)).toHaveAttribute('aria-current', 'true');
   });
 });
+
+test.describe('reviews', () => {
+  test('product shows its live rating and reviews', async ({ page }) => {
+    await open(page, '/product/w-jeans-1');
+    await expect(page.locator('[data-rating-summary]')).toContainText(/\d\.\d/);
+    await expect(page.getByRole('list', { name: 'Customer reviews' }).getByRole('listitem').first()).toBeVisible();
+  });
+
+  test('cards show the rating', async ({ page }) => {
+    await open(page, '/shop?category=bags');
+    await expect(page.locator('main a[href^="/product/"]').first()).toContainText('★');
+  });
+
+  test('a review needs a star rating', async ({ page }) => {
+    await open(page, '/product/w-top-1');
+    const form = page.getByRole('form', { name: 'Write a review' });
+    await form.getByLabel('Name').fill('Tester');
+    await form.getByLabel('Review').fill('Nice top');
+    await form.getByRole('button', { name: 'Post review' }).click();
+    await expect(form.getByRole('alert')).toHaveText('Choose a rating from 0.5 to 5 stars.');
+  });
+
+  test('posting a review adds it and updates the rating count', async ({ page }) => {
+    await open(page, '/product/w-top-1');
+    const countText = async () => (await page.locator('[data-rating-summary]').innerText()).match(/(\d+) reviews?/i)![1];
+    const before = Number(await countText());
+    const form = page.getByRole('form', { name: 'Write a review' });
+    await form.getByRole('radio', { name: '5 stars', exact: true }).click();
+    await form.getByLabel('Name').fill('E2E Tester');
+    await form.getByLabel('Review').fill('Posted from the e2e suite.');
+    await form.getByRole('button', { name: 'Post review' }).click();
+    await expect(form.getByRole('status')).toHaveText('Thanks — your review is live.');
+    await expect(page.getByRole('list', { name: 'Customer reviews' }).getByRole('listitem').first()).toContainText('Posted from the e2e suite.');
+    await expect.poll(countText).toBe(String(before + 1));
+  });
+
+  test('the picker has five stars and allows half stars', async ({ page }) => {
+    await open(page, '/product/w-top-2');
+    const form = page.getByRole('form', { name: 'Write a review' });
+    await expect(form.locator('[role=radiogroup] svg path')).toHaveCount(10); // 5 stars, each a grey and an ink layer
+    await expect(form.getByRole('radio')).toHaveCount(10);
+    await form.getByRole('radio', { name: '3.5 stars' }).click();
+    await expect(form).toContainText('3.5 · Good');
+    await form.getByLabel('Name').fill('Half Star');
+    await form.getByLabel('Review').fill('Three and a half from the e2e suite.');
+    await form.getByRole('button', { name: 'Post review' }).click();
+    const first = page.getByRole('list', { name: 'Customer reviews' }).getByRole('listitem').first();
+    await expect(first).toContainText('Three and a half from the e2e suite.');
+    await expect(first.getByRole('img', { name: '3.5 out of 5 stars' })).toBeVisible();
+  });
+
+  test('the API rejects ratings that are out of range or not half steps', async ({ request }) => {
+    for (const rating of [7, 0, 3.25]) {
+      const res = await request.post('/api/reviews', { data: { productId: 'w-top-1', rating, author: 'x', body: 'hello' } });
+      expect(res.status()).toBe(400);
+    }
+  });
+});

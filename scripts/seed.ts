@@ -1,5 +1,6 @@
 import { db } from '../src/db';
-import { products } from '../src/db/schema';
+import { products, reviews } from '../src/db/schema';
+import { buildReviews } from './reviews';
 
 const FEATURED_IDS: string[] = ['w-jeans-1', 'm-hood-1', 'w-top-2', 'w-sun-1', 'm-jeans-1', 'w-bag-1', 'w-hood-1', 'w-jewel-2', 'm-top-1', 'w-belt-2', 'w-jack-3', 'm-jeans-4', 'm-sun-2', 'w-hood-4', 'm-jack-5', 'w-bag-7', 'm-bag-1', 'm-bag-3'];
 
@@ -120,5 +121,7 @@ await db.delete(products);
 await db.insert(products).values(
   PRODUCTS.map((p) => ({ ...p, description: p.desc, featured: FEATURED_IDS.includes(p.id) })).map(({ desc, ...rest }) => rest),
 );
-console.log(`Seeded ${PRODUCTS.length} products`);
+const REVIEWS = buildReviews(PRODUCTS);
+await db.insert(reviews).values(REVIEWS);
+console.log(`Seeded ${PRODUCTS.length} products and ${REVIEWS.length} reviews`);
 process.exit(0);
