@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,7 +17,6 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  adapter: node({
-    mode: 'standalone'
-  })
+  // Vercel sets VERCEL=1 during its builds; everywhere else (Docker, local) we ship a Node server
+  adapter: process.env.VERCEL ? vercel() : node({ mode: 'standalone' }),
 });
