@@ -25,5 +25,14 @@ const { title = 'DCS Y2K — cyber Y2K fashion' } = Astro.props;
     <main transition:animate="fade"><slot /></main>
     <Footer />
     <CartDrawer client:load transition:persist="cart-drawer" />
+    <script>
+      // Morph only the clicked card into the product photo. Naming every card would make the
+      // browser snapshot each image on every navigation, which is what made opening a product lag.
+      document.addEventListener('click', (e) => {
+        const link = (e.target as Element).closest?.('a[href^="/product/"]');
+        const image = link?.querySelector<HTMLElement>('[data-product-image]');
+        if (image) image.style.viewTransitionName = `product-${image.dataset.productImage}`;
+      });
+    </script>
   </body>
 </html>

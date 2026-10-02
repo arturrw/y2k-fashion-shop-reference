@@ -24,8 +24,8 @@ const ratings = await ratingSummaries([product.id, ...related.map((p) => p.id)])
 ---
 <Layout title={`${product.name} — DCS Y2K`}>
   <div class="grid border-b border-ink md:grid-cols-12">
-    <div transition:name={`product-${product.id}`} class="aspect-[4/5] overflow-hidden bg-surface-card md:col-span-7 md:border-r md:border-ink">
-      {product.imageUrl && <img src={product.imageUrl} alt={product.name} class="size-full object-cover" />}
+    <div style={`view-transition-name: product-${product.id}`} class="aspect-[4/5] overflow-hidden bg-surface-card md:col-span-7 md:border-r md:border-ink">
+      {product.imageUrl && <img src={product.imageUrl} alt={product.name} fetchpriority="high" class="size-full object-cover" />}
     </div>
     <div class="reveal flex flex-col gap-6 p-6 md:sticky md:top-24 md:col-span-5 md:self-start md:p-10">
       <a href="/shop" class="eyebrow link-line self-start text-mute hover:text-ink">← Back to shop</a>
