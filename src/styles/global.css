@@ -50,8 +50,31 @@
 
 @utility h-display {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -1.2px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+/* small uppercase label: navigation, buttons, metadata */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* horizontal scrollers without a visible scrollbar (filter chips on phones) */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* text link with an underline that draws in on hover */
+@utility link-line {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  &:hover { background-size: 100% 1px; }
 }
 
 /* ---- Motion ---- */

@@ -2,6 +2,7 @@
 import CartButton from './CartButton';
 import SearchButton from './SearchButton';
 import AccountButton from './AccountButton';
+import MobileMenu from './MobileMenu';
 import { ChevronDown } from 'lucide-react';
 import { NAV } from '../lib/catalog';
 
@@ -13,8 +14,9 @@ const TICKER = ['Free worldwide shipping', 'Collection 01 — Cyber Y2K', 'Archi
       {Array.from({ length: 2 }).flatMap(() => TICKER.map((t) => <span>{t}<span class="ml-12 text-accent">✦</span></span>))}
     </div>
   </div>
-  <div class="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:px-8">
-    <nav data-main-nav class="flex min-w-0 items-center gap-5 overflow-x-auto md:overflow-visible">
+  <div class="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-2 px-2 md:gap-4 md:px-8">
+    <MobileMenu client:load nav={NAV} />
+    <nav data-main-nav class="hidden min-w-0 items-center gap-5 md:flex">
       {NAV.map((tab) => (
         <div class="group relative">
           <a href={tab.href} class="eyebrow flex items-center gap-1 py-5 whitespace-nowrap">
@@ -33,8 +35,8 @@ const TICKER = ['Free worldwide shipping', 'Collection 01 — Cyber Y2K', 'Archi
         </div>
       ))}
     </nav>
-    <a href="/" class="font-display text-[26px] leading-none tracking-[0.18em] whitespace-nowrap uppercase md:text-[30px]">DCS Y2K</a>
-    <div class="flex items-center justify-end gap-1">
+    <a href="/" class="font-display text-[22px] leading-none tracking-[0.14em] whitespace-nowrap uppercase sm:text-[26px] md:text-[30px] md:tracking-[0.18em]">DCS Y2K</a>
+    <div class="flex items-center justify-end md:gap-1">
       <SearchButton client:load />
       <AccountButton client:load />
       <CartButton client:load />
