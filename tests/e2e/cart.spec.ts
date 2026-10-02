@@ -84,8 +84,28 @@ test.describe('adding and removing', () => {
   test('trash button removes a line and shows the empty state', async ({ page }) => {
     await addProduct(page);
     await drawer(page).getByRole('button', { name: 'Remove Low-Rise Butterfly Jeans' }).click();
+    const confirm = page.getByRole('alertdialog', { name: 'Are you sure?' });
+    await expect(confirm).toContainText('Remove Low-Rise Butterfly Jeans (size M) from your bag?');
+    await confirm.getByRole('button', { name: 'Yes, remove' }).click();
     await expect(drawer(page)).toContainText('Your bag is empty.');
     await expect(badge(page)).toHaveCount(0);
+  });
+
+  test('answering No keeps the line', async ({ page }) => {
+    await addProduct(page);
+    await drawer(page).getByRole('button', { name: 'Remove Low-Rise Butterfly Jeans' }).click();
+    await page.getByRole('alertdialog', { name: 'Are you sure?' }).getByRole('button', { name: 'No' }).click();
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
+    await expect(drawer(page).getByRole('button', { name: 'Remove Low-Rise Butterfly Jeans' })).toBeVisible();
+    await expect(badge(page)).toHaveText('1');
+  });
+
+  test('Escape closes the confirmation but keeps the bag open', async ({ page }) => {
+    await addProduct(page);
+    await drawer(page).getByRole('button', { name: 'Remove Low-Rise Butterfly Jeans' }).click();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
+    await expect(drawer(page)).toBeVisible();
   });
 
   test('Checkout button is shown when the bag has items', async ({ page }) => {

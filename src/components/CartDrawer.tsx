@@ -1,24 +1,39 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { Trash2, X } from 'lucide-react';
-import { cart, cartOpen, cartSubtotal, removeFromCart } from '../lib/cart';
+import { cart, cartOpen, cartSubtotal, removeFromCart, type CartLine } from '../lib/cart';
 
 export default function CartDrawer() {
   const lines = useStore(cart);
   const open = useStore(cartOpen);
   const subtotal = useStore(cartSubtotal);
   const [checkoutMessage, setCheckoutMessage] = useState(false);
+  // line waiting for the "are you sure?" answer
+  const [pending, setPending] = useState<CartLine | null>(null);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && cartOpen.set(false);
+    // Escape backs out of the confirmation first, then closes the drawer
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (pending) setPending(null);
+      else cartOpen.set(false);
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open]);
+  }, [open, pending]);
 
   useEffect(() => {
-    if (!open) setCheckoutMessage(false);
+    if (!open) {
+      setCheckoutMessage(false);
+      setPending(null);
+    }
   }, [open]);
+
+  const confirmRemove = () => {
+    if (pending) removeFromCart(pending.id, pending.size);
+    setPending(null);
+  };
 
   if (!open) return null;
 
@@ -58,8 +73,8 @@ export default function CartDrawer() {
                     </span>
                   </div>
                 </a>
-                <button aria-label={`Remove ${l.name}`} onClick={() => removeFromCart(l.id, l.size)} className="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-secondary">
-                  <Trash2 size={16} />
+                <button aria-label={`Remove ${l.name}`} onClick={() => setPending(l)} className="flex size-10 shrink-0 items-center justify-center transition-colors hover:bg-ink hover:text-canvas">
+                  <Trash2 size={16} strokeWidth={1.5} />
                 </button>
               </div>
             ))}
@@ -78,6 +93,31 @@ export default function CartDrawer() {
                 Checkout isn’t available yet — we’re working on it.
               </p>
             )}
+          </div>
+        )}
+        {pending && (
+          <div className="animate-fade-in fixed inset-y-0 right-0 flex w-[400px] max-w-[90vw] items-end bg-ink/30 p-4 md:items-center" onClick={() => setPending(null)}>
+            <div
+              role="alertdialog"
+              aria-modal="true"
+              aria-labelledby="remove-title"
+              aria-describedby="remove-desc"
+              onClick={(e) => e.stopPropagation()}
+              className="w-full border border-ink bg-canvas p-6"
+            >
+              <h3 id="remove-title" className="h-display mb-2 text-[28px]">Are you sure?</h3>
+              <p id="remove-desc" className="mb-6 text-sm text-body">
+                Remove <span className="font-medium text-ink">{pending.name}</span> (size {pending.size}) from your bag?
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button type="button" autoFocus onClick={() => setPending(null)} className="eyebrow h-12 border border-ink transition-colors hover:bg-surface-card">
+                  No
+                </button>
+                <button type="button" onClick={confirmRemove} className="eyebrow h-12 bg-ink text-canvas transition-colors hover:bg-error">
+                  Yes, remove
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </aside>
