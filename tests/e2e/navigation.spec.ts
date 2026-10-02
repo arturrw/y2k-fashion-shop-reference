@@ -100,10 +100,10 @@ test.describe('home', () => {
     });
   }
 
-  test('trending grid shows 10 products and opens one', async ({ page }) => {
+  test('trending grid shows 18 products and opens one', async ({ page }) => {
     await open(page, '/');
     const cards = page.locator('main a[href^="/product/"]');
-    await expect(cards).toHaveCount(10);
+    await expect(cards).toHaveCount(18);
     await cards.first().click();
     await expect(page).toHaveURL(/\/product\//);
   });

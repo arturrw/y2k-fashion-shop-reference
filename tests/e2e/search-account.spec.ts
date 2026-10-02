@@ -21,7 +21,7 @@ test.describe('search', () => {
     const suggestions = page.getByRole('list', { name: 'Suggestions' });
     await expect(suggestions.getByRole('link', { name: /Baguette Chain Bag/ })).toBeVisible();
     await suggestions.getByRole('link', { name: /Baguette Chain Bag/ }).click();
-    await expect(page).toHaveURL('/product/u-bag-1');
+    await expect(page).toHaveURL('/product/w-bag-1');
     await expect(dialog(page)).toHaveCount(0);
   });
 
@@ -41,7 +41,7 @@ test.describe('search', () => {
     await input(page).fill('hoodie');
     await page.getByRole('link', { name: 'See all results' }).click();
     await expect(page).toHaveURL('/shop?q=hoodie');
-    await expect(page.locator('main a[href^="/product/"]')).toHaveCount(4);
+    await expect(page.locator('main a[href^="/product/"]')).toHaveCount(12);
   });
 
   test('empty results are explained', async ({ page }) => {

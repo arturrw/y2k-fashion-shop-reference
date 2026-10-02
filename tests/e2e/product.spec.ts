@@ -40,7 +40,9 @@ test.describe('size buttons', () => {
 test('related products link to other products of the same category', async ({ page }) => {
   await open(page, '/product/w-jeans-1');
   const related = page.getByRole('heading', { name: 'You may also like' }).locator('xpath=following-sibling::div//a');
-  await expect(related).toHaveCount(3);
+  await expect(related).toHaveCount(4);
+  // only women's pieces next to a women's product
+  await expect(page.locator('a[href^="/product/m-"]')).toHaveCount(0);
   await related.first().click();
   await expect(page).toHaveURL(/\/product\/(?!w-jeans-1$)/);
 });

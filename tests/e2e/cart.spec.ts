@@ -75,7 +75,7 @@ test.describe('adding and removing', () => {
   test('different products sum in the subtotal', async ({ page }) => {
     await addProduct(page, 'w-jeans-1');
     await drawer(page).getByRole('button', { name: 'Close' }).click();
-    await page.goto('/product/u-sun-1');
+    await page.goto('/product/w-sun-1');
     await hydrated(page);
     await page.getByRole('button', { name: 'Add to bag' }).click();
     await expect(subtotal(page)).toHaveText('$70');
