@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { navigate } from 'astro:transitions/client';
@@ -67,8 +68,11 @@ export default function SearchButton() {
         <Search size={18} strokeWidth={1.5} />
       </button>
 
-      {open && (
-        <div className="animate-fade-in fixed inset-0 z-[1000] bg-black/50" onClick={close}>
+      {open &&
+        // portal: the header turns translucent with backdrop-filter on scroll, which would
+        // otherwise become the containing block of this fixed overlay and clip it
+        createPortal(
+        <div className="animate-fade-in fixed inset-0 z-[1000] bg-ink/40 backdrop-blur-[2px]" onClick={close}>
           <div
             role="dialog"
             aria-label="Search"
@@ -110,8 +114,9 @@ export default function SearchButton() {
             )}
             {hits && hits.length === 0 && <p className="mx-auto max-w-[960px] pt-4 text-sm text-mute">No products found for “{q.trim()}”.</p>}
           </div>
-        </div>
-      )}
+        </div>,
+        document.body,
+        )}
     </>
   );
 }

@@ -69,6 +69,16 @@ test.describe('header & hero', () => {
     await expect(header).toHaveAttribute('data-scrolled', '');
   });
 
+  test('login modal covers the whole screen after scrolling', async ({ page }) => {
+    await open(page, '/shop');
+    await page.mouse.wheel(0, 1200);
+    await expect(page.locator('body > header')).toHaveAttribute('data-scrolled', '');
+    await page.getByRole('button', { name: 'Account' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Log in' });
+    await expect(dialog).toBeInViewport({ ratio: 1 });
+    const overlay = await dialog.locator('..').boundingBox();
+    expect(overlay).toMatchObject({ y: 0, height: page.viewportSize()!.height });
+  });
 
   test('hero indicators switch looks', async ({ page }) => {
     await open(page, '/');

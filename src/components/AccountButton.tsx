@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useEffect, useState } from 'react';
 import { User, X } from 'lucide-react';
 
@@ -51,8 +52,11 @@ export default function AccountButton() {
         <User size={18} strokeWidth={1.5} />
       </button>
 
-      {open && (
-        <div className="animate-fade-in fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4" onClick={close}>
+      {open &&
+        // portal: the header turns translucent with backdrop-filter on scroll, which would
+        // otherwise become the containing block of this fixed overlay and clip it
+        createPortal(
+        <div className="animate-fade-in fixed inset-0 z-[1000] flex items-center justify-center bg-ink/40 p-4 backdrop-blur-[2px]" onClick={close}>
           <div
             role="dialog"
             aria-label={isLogin ? 'Log in' : 'Create account'}
@@ -107,8 +111,9 @@ export default function AccountButton() {
               </button>
             </p>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body,
+        )}
     </>
   );
 }
