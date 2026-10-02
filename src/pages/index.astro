@@ -5,10 +5,19 @@ import ProductCard from '../components/ProductCard.astro';
 import { db } from '../db';
 import { products } from '../db/schema';
 import { CATEGORIES } from '../lib/catalog';
+import HeroSlider from '../components/HeroSlider';
 
 const featured = await db.select().from(products).where(eq(products.featured, true));
 
-const HERO_IMAGE = 'https://i.pinimg.com/736x/36/ef/ea/36efea567b898c63124c5a898a353736.jpg';
+const HERO_SLIDES = [
+  { src: 'https://i.pinimg.com/1200x/36/ef/ea/36efea567b898c63124c5a898a353736.jpg', alt: 'Cyber Y2K is back' },
+  { src: 'https://i.pinimg.com/1200x/34/9c/80/349c804a4137a1502ecf548d4971de22.jpg', alt: 'Chains, white tank and baggy denim on the street' },
+  { src: 'https://i.pinimg.com/1200x/eb/04/ba/eb04bab683decb6d7a6896581f3ebd2b.jpg', alt: 'Leopard beanie and oversized chrome shades' },
+  { src: 'https://i.pinimg.com/1200x/0c/96/44/0c9644bd9d3a9874d94361be0c22344b.jpg', alt: 'Cargo pants and a cropped top on a rainy night' },
+  { src: 'https://i.pinimg.com/1200x/32/21/54/32215463f48a14dbcc62ef73daa76c96.jpg', alt: 'Star-patched baggy jeans with a denim bandeau' },
+  { src: 'https://i.pinimg.com/1200x/5b/35/ce/5b35cefc7707e1d62a377e7991800055.jpg', alt: 'Oversized suit shot from above in a parking garage' },
+  { src: 'https://i.pinimg.com/1200x/8b/7f/17/8b7f1745ad38abe89d1794f73ff876e4.jpg', alt: 'Washed denim mini skirt with slouchy boots' },
+];
 const CATEGORY_IMAGES: Record<string, string> = {
   jeans: 'https://i.pinimg.com/736x/ba/66/7c/ba667c05430c38d76b4e918fb2200603.jpg',
   hoodies: 'https://i.pinimg.com/736x/7f/a1/03/7fa103937eeb2a437ecd49e150d7f15f.jpg',
@@ -21,25 +30,22 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 ---
 <Layout>
-  <section class="grid border-b border-ink md:grid-cols-12">
-    <div class="relative aspect-[4/5] overflow-hidden bg-surface-card md:col-span-7 md:aspect-auto md:h-[calc(100vh-6rem)] md:min-h-[560px] md:border-r md:border-ink">
-      <img src={HERO_IMAGE} alt="Cyber Y2K is back" loading="eager" class="size-full object-cover" />
-      <span class="eyebrow absolute bottom-4 left-4 bg-accent px-2 py-1 text-ink">Look 01 / 24</span>
-    </div>
-    <div class="reveal flex flex-col justify-between gap-10 p-6 md:col-span-5 md:p-10">
-      <div class="eyebrow flex justify-between text-mute">
+  <section class="relative h-[calc(100svh-5.85rem)] min-h-[600px] overflow-hidden border-b border-ink bg-ink">
+    <HeroSlider client:load slides={HERO_SLIDES} />
+    <div class="pointer-events-none absolute inset-0 flex flex-col justify-between p-6 text-white md:p-10">
+      <div class="eyebrow flex justify-between gap-4 text-white/80">
         <span>Collection 01</span>
+        <span class="hidden md:inline">Paris — Tokyo — Los Angeles</span>
         <span>SS—27</span>
       </div>
-      <div>
-        <h1 class="h-display mb-8 text-[64px] md:text-[clamp(64px,7.5vw,128px)]">Cyber <em>Y2K</em> is back.</h1>
-        <p class="mb-10 max-w-[380px] leading-relaxed text-body">Low-rise denim, chrome hoodies and bedazzled everything — an archive of the millennium, re-cut for now. Hand-picked, shipped worldwide.</p>
-        <div class="flex flex-wrap gap-3">
-          <a href="/shop?gender=women" class="eyebrow inline-flex h-12 items-center bg-ink px-7 text-canvas transition-colors hover:bg-accent hover:text-ink">Shop women's</a>
-          <a href="/shop?gender=men" class="eyebrow inline-flex h-12 items-center border border-ink px-7 transition-colors hover:bg-ink hover:text-canvas">Shop men's</a>
+      <div class="reveal mb-16 max-w-[900px]">
+        <h1 class="h-display mb-6 text-[64px] md:text-[clamp(80px,9vw,156px)]">Cyber <em>Y2K</em> is back.</h1>
+        <p class="mb-8 max-w-[420px] leading-relaxed text-white/85">Low-rise denim, chrome hoodies and bedazzled everything — an archive of the millennium, re-cut for now. Hand-picked, shipped worldwide.</p>
+        <div class="pointer-events-auto flex flex-wrap gap-3">
+          <a href="/shop?gender=women" class="eyebrow inline-flex h-12 items-center bg-canvas px-7 text-ink transition-colors hover:bg-accent">Shop women's</a>
+          <a href="/shop?gender=men" class="eyebrow inline-flex h-12 items-center border border-white px-7 text-white transition-colors hover:bg-white hover:text-ink">Shop men's</a>
         </div>
       </div>
-      <p class="eyebrow text-mute">Paris — Tokyo — Los Angeles</p>
     </div>
   </section>
 
@@ -59,7 +65,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
               tabindex={duplicate ? -1 : undefined}
             >
               <div class="mb-3 aspect-[3/4] overflow-hidden bg-surface-card">
-                <img src={CATEGORY_IMAGES[c.key]} alt="" loading="lazy" class="size-full object-cover grayscale transition duration-500 group-hover:scale-[1.04] group-hover:grayscale-0" />
+                <img src={CATEGORY_IMAGES[c.key]} alt="" loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
               </div>
               <span aria-hidden="true" class="eyebrow mr-2 text-mute">{String(i + 1).padStart(2, '0')}</span>
               <span class="link-line text-sm">{c.label}</span>

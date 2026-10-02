@@ -59,3 +59,24 @@ test.describe('shortcuts', () => {
     await expect(page).toHaveURL('/shop?gender=women&category=tops');
   });
 });
+
+test.describe('header & hero', () => {
+  test('header turns see-through once the page scrolls', async ({ page }) => {
+    await open(page, '/shop');
+    const header = page.locator('body > header');
+    await expect(header).not.toHaveAttribute('data-scrolled');
+    await page.mouse.wheel(0, 800);
+    await expect(header).toHaveAttribute('data-scrolled', '');
+  });
+
+
+  test('hero indicators switch looks', async ({ page }) => {
+    await open(page, '/');
+    const dots = page.getByRole('group', { name: 'Choose a look' }).getByRole('button');
+    await expect(dots).toHaveCount(7);
+    await expect(page.getByText('Look 01 / 07')).toBeVisible();
+    await dots.nth(2).click();
+    await expect(page.getByText('Look 03 / 07')).toBeVisible();
+    await expect(dots.nth(2)).toHaveAttribute('aria-current', 'true');
+  });
+});

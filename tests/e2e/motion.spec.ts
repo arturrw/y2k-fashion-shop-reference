@@ -37,3 +37,11 @@ test('reduced motion disables the animations', async ({ page }) => {
   await open(page, '/shop');
   expect(await style(page.locator('main a[href^="/product/"]').first(), 'animationName')).toBe('none');
 });
+
+test('hero lookbook autoplays and does not pause on hover', async ({ page }) => {
+  await open(page, '/');
+  const fill = page.locator('.hero-fill[data-state="active"]');
+  expect(await style(fill, 'animationName')).toBe('hero-progress');
+  await page.locator('section').first().hover();
+  expect(await fill.evaluate((el) => getComputedStyle(el).animationPlayState)).toBe('running');
+});

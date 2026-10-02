@@ -77,6 +77,28 @@
   to { transform: translateX(-50%); }
 }
 
+@keyframes hero-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes hero-zoom {
+  from { transform: scale(1.06); }
+  to { transform: scale(1); }
+}
+
+/* ---- Hero lookbook ---- */
+.hero-slide {
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-slide[data-active] {
+  opacity: 1;
+  animation: hero-zoom 7s ease-out both;
+}
+.hero-fill { transform: scaleX(0); }
+.hero-fill[data-state="done"] { transform: scaleX(1); }
+.hero-fill[data-state="active"] { animation: hero-progress 6s linear forwards; }
+
 /* staggered entrance: set --i on the element */
 .reveal {
   animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -98,7 +120,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .reveal, .animate-fade-in, .animate-drawer, .animate-pop { animation: none; }
-  .category-track { animation: none; }
+  .category-track, .ticker-track { animation: none; }
+  /* no autoplay: the active indicator is simply full, looks change on click */
+  .hero-slide[data-active] { animation: none; }
+  .hero-fill[data-state="active"] { animation: none; transform: scaleX(1); }
   * { transition-duration: 0.01ms !important; }
 }
 

@@ -7,8 +7,8 @@ import { NAV } from '../lib/catalog';
 
 const TICKER = ['Free worldwide shipping', 'Collection 01 — Cyber Y2K', 'Archive pieces restocked weekly', 'Returns within 30 days'];
 ---
-<header transition:persist="site-header" class="sticky top-0 z-50 border-b border-ink bg-canvas">
-  <div class="overflow-hidden bg-ink py-1.5 text-canvas" aria-hidden="true">
+<header transition:persist="site-header" class="group/header sticky top-0 z-50 border-b border-ink bg-canvas transition-[background-color,backdrop-filter] duration-300 data-[scrolled]:border-ink/20 data-[scrolled]:bg-canvas/55 data-[scrolled]:backdrop-blur-md">
+  <div class="overflow-hidden bg-ink py-1.5 text-canvas transition-colors duration-300 group-data-[scrolled]/header:bg-ink/75" aria-hidden="true">
     <div class="ticker-track eyebrow flex w-max gap-12 whitespace-nowrap">
       {Array.from({ length: 2 }).flatMap(() => TICKER.map((t) => <span>{t}<span class="ml-12 text-accent">✦</span></span>))}
     </div>
@@ -50,6 +50,12 @@ const TICKER = ['Free worldwide shipping', 'Collection 01 — Cyber Y2K', 'Archi
     (document.activeElement as HTMLElement | null)?.blur();
     nav()?.setAttribute('data-closed', '');
   });
+  // Frosted, see-through header once the page is scrolled.
+  const header = document.querySelector<HTMLElement>('body > header')!;
+  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('astro:page-load', onScroll);
+
   document.addEventListener('mouseout', (e) => {
     const n = nav();
     if (n && !n.contains(e.relatedTarget as Node | null)) n.removeAttribute('data-closed');
