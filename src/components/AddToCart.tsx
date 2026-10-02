@@ -14,14 +14,14 @@ export default function AddToCart({ id, name, price, sizes, imageUrl }: Props) {
   return (
     <>
       <div>
-        <span className="mb-2 block text-sm font-semibold">Size</span>
-        <div className="flex flex-wrap gap-2">
+        <span className="eyebrow mb-3 block text-mute">Size</span>
+        <div className="flex flex-wrap">
           {sizes.map((s) => (
             <button
               key={s}
               onClick={() => setSize(s)}
               aria-pressed={s === size}
-              className={`h-9 rounded-full px-4 text-sm font-semibold ${s === size ? 'bg-ink text-white' : 'bg-secondary hover:bg-secondary-pressed'}`}
+              className={`-ml-px h-11 w-14 border border-ink font-mono text-sm transition-colors first:ml-0 ${s === size ? 'bg-ink text-canvas' : 'hover:bg-surface-card'}`}
             >
               {s}
             </button>
@@ -30,7 +30,7 @@ export default function AddToCart({ id, name, price, sizes, imageUrl }: Props) {
       </div>
       <button
         onClick={() => addToCart({ id, name, price, size, imageUrl })}
-        className="mt-2 h-11 w-full rounded-full bg-primary font-semibold text-white hover:bg-primary-pressed"
+        className="eyebrow h-12 w-full bg-ink text-canvas transition-colors hover:bg-accent hover:text-ink"
       >
         Add to bag
       </button>

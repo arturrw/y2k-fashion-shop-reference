@@ -5,32 +5,40 @@ import AccountButton from './AccountButton';
 import { ChevronDown } from 'lucide-react';
 import { NAV } from '../lib/catalog';
 
+const TICKER = ['Free worldwide shipping', 'Collection 01 — Cyber Y2K', 'Archive pieces restocked weekly', 'Returns within 30 days'];
 ---
-<header transition:persist="site-header" class="sticky top-0 z-50 flex h-16 items-center justify-between gap-4 border-b border-hairline bg-canvas px-6">
-  <a href="/" class="font-display text-xl font-bold tracking-tight whitespace-nowrap">DCS Y2K</a>
-  <nav data-main-nav class="flex min-w-0 flex-1 items-center justify-center gap-6 overflow-x-auto md:overflow-visible">
-    {NAV.map((tab) => (
-      <div class="group relative">
-        <a href={tab.href} class="flex items-center gap-1 py-5 text-sm font-semibold whitespace-nowrap">
-          {tab.label}
-          <ChevronDown size={14} class="transition-transform group-focus-within:rotate-180 md:group-hover:rotate-180" />
-        </a>
-        <div data-dropdown class="animate-fade-in absolute top-full left-1/2 z-50 hidden -translate-x-1/2 pt-1 md:group-focus-within:block md:group-hover:block">
-          <ul class="min-w-[220px] rounded-md bg-canvas p-2 shadow-modal">
-            {tab.items.map((item) => (
-              <li>
-                <a href={item.href} class="block rounded-sm px-3 py-2 text-sm whitespace-nowrap hover:bg-surface-card">{item.label}</a>
-              </li>
-            ))}
-          </ul>
+<header transition:persist="site-header" class="sticky top-0 z-50 border-b border-ink bg-canvas">
+  <div class="overflow-hidden bg-ink py-1.5 text-canvas" aria-hidden="true">
+    <div class="ticker-track eyebrow flex w-max gap-12 whitespace-nowrap">
+      {Array.from({ length: 2 }).flatMap(() => TICKER.map((t) => <span>{t}<span class="ml-12 text-accent">✦</span></span>))}
+    </div>
+  </div>
+  <div class="grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 md:px-8">
+    <nav data-main-nav class="flex min-w-0 items-center gap-5 overflow-x-auto md:overflow-visible">
+      {NAV.map((tab) => (
+        <div class="group relative">
+          <a href={tab.href} class="eyebrow flex items-center gap-1 py-5 whitespace-nowrap">
+            <span class="link-line">{tab.label}</span>
+            <ChevronDown size={12} strokeWidth={1.5} class="transition-transform group-focus-within:rotate-180 md:group-hover:rotate-180" />
+          </a>
+          <div data-dropdown class="animate-fade-in absolute top-full left-0 z-50 hidden md:group-focus-within:block md:group-hover:block">
+            <ul class="min-w-[240px] border border-ink bg-canvas py-2">
+              {tab.items.map((item) => (
+                <li>
+                  <a href={item.href} class="block px-4 py-2 text-sm whitespace-nowrap hover:bg-ink hover:text-canvas">{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
-    ))}
-  </nav>
-  <div class="flex items-center gap-3">
-    <SearchButton client:load />
-    <AccountButton client:load />
-    <CartButton client:load />
+      ))}
+    </nav>
+    <a href="/" class="font-display text-[26px] leading-none tracking-[0.18em] whitespace-nowrap uppercase md:text-[30px]">DCS Y2K</a>
+    <div class="flex items-center justify-end gap-1">
+      <SearchButton client:load />
+      <AccountButton client:load />
+      <CartButton client:load />
+    </div>
   </div>
 </header>
 

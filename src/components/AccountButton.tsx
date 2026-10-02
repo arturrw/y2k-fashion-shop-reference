@@ -46,9 +46,9 @@ export default function AccountButton() {
       <button
         aria-label="Account"
         onClick={() => setOpen(true)}
-        className="flex size-10 items-center justify-center rounded-full hover:bg-secondary"
+        className="flex size-10 items-center justify-center transition-colors hover:bg-ink hover:text-canvas"
       >
-        <User size={18} />
+        <User size={18} strokeWidth={1.5} />
       </button>
 
       {open && (
@@ -57,37 +57,37 @@ export default function AccountButton() {
             role="dialog"
             aria-label={isLogin ? 'Log in' : 'Create account'}
             onClick={(e) => e.stopPropagation()}
-            className="w-[380px] max-w-full rounded-lg bg-canvas p-6 shadow-modal"
+            className="w-[420px] max-w-full border border-ink bg-canvas p-8"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-[22px] font-semibold">{isLogin ? 'Log in to DCS Y2K' : 'Create your account'}</h2>
-              <button aria-label="Close" onClick={close} className="flex size-10 items-center justify-center rounded-full hover:bg-secondary">
-                <X size={18} />
+            <div className="mb-6 flex items-start justify-between">
+              <h2 className="h-display text-[34px]">{isLogin ? 'Log in to DCS Y2K' : 'Create your account'}</h2>
+              <button aria-label="Close" onClick={close} className="flex size-10 items-center justify-center transition-colors hover:bg-ink hover:text-canvas">
+                <X size={18} strokeWidth={1.5} />
               </button>
             </div>
 
-            <form onSubmit={submit} noValidate className="flex flex-col gap-4">
-              <label className="flex flex-col gap-1 text-sm font-semibold">
+            <form onSubmit={submit} noValidate className="flex flex-col gap-5">
+              <label className="eyebrow flex flex-col gap-1 text-mute">
                 Email
-                <input name="email" type="email" autoComplete="email" placeholder="you@example.com" className="h-12 rounded-md border border-hairline px-4 text-base font-normal" />
+                <input name="email" type="email" autoComplete="email" placeholder="you@example.com" className="h-12 border-b border-ink bg-transparent font-body text-base tracking-normal text-ink normal-case outline-none placeholder:text-ash" />
               </label>
-              <label className="flex flex-col gap-1 text-sm font-semibold">
+              <label className="eyebrow flex flex-col gap-1 text-mute">
                 Password
                 <input
                   name="password"
                   type="password"
                   autoComplete={isLogin ? 'current-password' : 'new-password'}
                   placeholder="••••••••"
-                  className="h-12 rounded-md border border-hairline px-4 text-base font-normal"
+                  className="h-12 border-b border-ink bg-transparent font-body text-base tracking-normal text-ink normal-case outline-none placeholder:text-ash"
                 />
               </label>
-              {error && <p role="alert" className="text-sm text-primary-pressed">{error}</p>}
+              {error && <p role="alert" className="text-sm text-error">{error}</p>}
               {sent && (
-                <p role="status" className="rounded-md bg-surface-card p-3 text-sm text-body">
+                <p role="status" className="border border-hairline p-3 text-sm text-body">
                   Accounts aren’t available yet — we’re working on it.
                 </p>
               )}
-              <button type="submit" className="h-11 w-full rounded-full bg-primary font-semibold text-white hover:bg-primary-pressed">
+              <button type="submit" className="eyebrow h-12 w-full bg-ink text-canvas transition-colors hover:bg-accent hover:text-ink">
                 {isLogin ? 'Log in' : 'Create account'}
               </button>
             </form>
@@ -101,7 +101,7 @@ export default function AccountButton() {
                   setError('');
                   setSent(false);
                 }}
-                className="font-semibold text-ink underline"
+                className="text-ink underline underline-offset-4"
               >
                 {isLogin ? 'Create an account' : 'Log in'}
               </button>

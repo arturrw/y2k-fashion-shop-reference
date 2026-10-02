@@ -62,9 +62,9 @@ export default function SearchButton() {
       <button
         aria-label="Search"
         onClick={() => setOpen(true)}
-        className="flex size-10 items-center justify-center rounded-full hover:bg-secondary"
+        className="flex size-10 items-center justify-center transition-colors hover:bg-ink hover:text-canvas"
       >
-        <Search size={18} />
+        <Search size={18} strokeWidth={1.5} />
       </button>
 
       {open && (
@@ -73,10 +73,10 @@ export default function SearchButton() {
             role="dialog"
             aria-label="Search"
             onClick={(e) => e.stopPropagation()}
-            className="mx-auto mt-16 w-[560px] max-w-[92vw] rounded-lg bg-canvas p-4 shadow-modal"
+            className="w-full border-b border-ink bg-canvas px-4 py-6 md:px-8"
           >
-            <form onSubmit={submit} role="search" className="flex items-center gap-2 rounded-full bg-secondary px-4">
-              <Search size={18} className="shrink-0 text-mute" />
+            <form onSubmit={submit} role="search" className="mx-auto flex max-w-[960px] items-center gap-3 border-b border-ink">
+              <Search size={22} strokeWidth={1.5} className="shrink-0 text-mute" />
               <input
                 ref={inputRef}
                 type="search"
@@ -84,31 +84,31 @@ export default function SearchButton() {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search jeans, hoodies, shades…"
                 aria-label="Search products"
-                className="h-12 min-w-0 flex-1 bg-transparent text-base outline-none"
+                className="h-16 min-w-0 flex-1 bg-transparent font-display text-[32px] outline-none placeholder:text-ash"
               />
-              <button type="button" aria-label="Close search" onClick={close} className="flex size-8 items-center justify-center rounded-full hover:bg-secondary-pressed">
-                <X size={16} />
+              <button type="button" aria-label="Close search" onClick={close} className="flex size-10 items-center justify-center transition-colors hover:bg-ink hover:text-canvas">
+                <X size={18} strokeWidth={1.5} />
               </button>
             </form>
 
             {hits && hits.length > 0 && (
-              <ul className="mt-3 flex flex-col" aria-label="Suggestions">
+              <ul className="mx-auto mt-4 flex max-w-[960px] flex-col" aria-label="Suggestions">
                 {hits.map((h) => (
                   <li key={h.id}>
-                    <a href={`/product/${h.id}`} className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm hover:bg-surface-card">
-                      <span className="font-semibold">{h.name}</span>
-                      <span className="text-mute">${h.price}</span>
+                    <a href={`/product/${h.id}`} className="flex items-center justify-between border-b border-hairline px-1 py-3 text-sm transition-colors hover:bg-surface-card">
+                      <span>{h.name}</span>
+                      <span className="font-mono text-mute">${h.price}</span>
                     </a>
                   </li>
                 ))}
                 <li>
-                  <a href={`/shop?q=${encodeURIComponent(q.trim())}`} className="block rounded-md px-3 py-2.5 text-sm font-semibold text-primary hover:bg-surface-card">
+                  <a href={`/shop?q=${encodeURIComponent(q.trim())}`} className="eyebrow link-line mt-4 inline-block">
                     See all results
                   </a>
                 </li>
               </ul>
             )}
-            {hits && hits.length === 0 && <p className="px-3 pt-4 pb-2 text-sm text-mute">No products found for “{q.trim()}”.</p>}
+            {hits && hits.length === 0 && <p className="mx-auto max-w-[960px] pt-4 text-sm text-mute">No products found for “{q.trim()}”.</p>}
           </div>
         </div>
       )}

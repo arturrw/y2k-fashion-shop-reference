@@ -29,21 +29,27 @@ const href = (g: string, c: string) => {
   return `/shop${p.size ? '?' + p : ''}`;
 };
 const chip = (active: boolean) =>
-  `inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold ${active ? 'bg-ink text-white' : 'bg-secondary hover:bg-secondary-pressed'}`;
+  `eyebrow inline-flex h-9 items-center border px-4 transition-colors ${active ? 'border-ink bg-ink text-canvas' : 'border-hairline hover:border-ink'}`;
 const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
 ---
 <Layout title={`${title} — DCS Y2K`}>
-  <div class="mx-auto max-w-[1280px] p-6">
-    <h1 class="h-display mb-6 text-[28px]">{title}</h1>
-    <div class="mb-4 flex flex-wrap gap-2">
+  <div class="px-4 py-10 md:px-8">
+    <div class="mb-10 flex items-end justify-between gap-6 border-b border-ink pb-6">
+      <h1 class="h-display text-[48px] md:text-[88px]">{title}</h1>
+      <span class="eyebrow shrink-0 text-mute">({String(items.length).padStart(2, '0')}) Pieces</span>
+    </div>
+    <div class="mb-3 flex flex-wrap items-center gap-2">
+      <span class="eyebrow w-24 text-mute">Edit</span>
       {genders.map(([k, l]) => <a href={href(k, category)} class={chip(gender === k)}>{l}</a>)}
     </div>
-    <div class="mb-8 flex flex-wrap gap-2">
+    <div class="mb-12 flex flex-wrap items-center gap-2">
+      <span class="eyebrow w-24 text-mute">Category</span>
       <a href={href(gender, 'all')} class={chip(category === 'all')}>All</a>
       {CATEGORIES.map((c) => <a href={href(gender, c.key)} class={chip(category === c.key)}>{c.label}</a>)}
     </div>
     {items.length === 0
-      ? <p class="py-16 text-center text-mute">{q ? `No products found for “${q}”.` : 'Nothing here yet.'}</p>
-      : <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} />)}</div>}
+      ? <p class="h-display py-24 text-center text-[32px] text-mute">{q ? `No products found for “${q}”.` : 'Nothing here yet.'}</p>
+      : <div class="mb-16 grid grid-cols-2 gap-x-4 md:grid-cols-3 lg:grid-cols-4">{items.map((p, i) => <ProductCard product={p} index={i} />)}</div>}
   </div>
 </Layout>
+

@@ -21,51 +21,67 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 ---
 <Layout>
-  <div class="mx-auto max-w-[1280px] p-6">
-    <section class="reveal mb-16 flex flex-wrap gap-8 rounded-md bg-surface-card p-8">
-      <div class="aspect-[4/5] min-w-[280px] flex-[1_1_420px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone">
-        <img src={HERO_IMAGE} alt="Cyber Y2K is back" loading="eager" class="size-full object-cover" />
+  <section class="grid border-b border-ink md:grid-cols-12">
+    <div class="relative aspect-[4/5] overflow-hidden bg-surface-card md:col-span-7 md:aspect-auto md:h-[calc(100vh-6rem)] md:min-h-[560px] md:border-r md:border-ink">
+      <img src={HERO_IMAGE} alt="Cyber Y2K is back" loading="eager" class="size-full object-cover" />
+      <span class="eyebrow absolute bottom-4 left-4 bg-accent px-2 py-1 text-ink">Look 01 / 24</span>
+    </div>
+    <div class="reveal flex flex-col justify-between gap-10 p-6 md:col-span-5 md:p-10">
+      <div class="eyebrow flex justify-between text-mute">
+        <span>Collection 01</span>
+        <span>SS—27</span>
       </div>
-      <div class="flex min-w-[280px] flex-[1_1_380px] flex-col justify-center gap-4">
-        <span class="text-xs font-medium tracking-wider text-mute uppercase">New drop</span>
-        <h1 class="font-display text-[44px] leading-[1.15] font-bold tracking-[-0.8px]">Cyber Y2K is back.</h1>
-        <p class="max-w-[420px] leading-snug text-body">Low-rise denim, chrome hoodies and bedazzled everything — hand-picked and shipped worldwide.</p>
-        <div class="mt-2 flex flex-wrap gap-3">
-          <a href="/shop?gender=women" class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-pressed">Shop women's</a>
-          <a href="/shop?gender=men" class="rounded-full bg-secondary px-5 py-2.5 text-sm font-semibold hover:bg-secondary-pressed">Shop men's</a>
+      <div>
+        <h1 class="h-display mb-8 text-[64px] md:text-[clamp(64px,7.5vw,128px)]">Cyber <em>Y2K</em> is back.</h1>
+        <p class="mb-10 max-w-[380px] leading-relaxed text-body">Low-rise denim, chrome hoodies and bedazzled everything — an archive of the millennium, re-cut for now. Hand-picked, shipped worldwide.</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/shop?gender=women" class="eyebrow inline-flex h-12 items-center bg-ink px-7 text-canvas transition-colors hover:bg-accent hover:text-ink">Shop women's</a>
+          <a href="/shop?gender=men" class="eyebrow inline-flex h-12 items-center border border-ink px-7 transition-colors hover:bg-ink hover:text-canvas">Shop men's</a>
         </div>
       </div>
-    </section>
+      <p class="eyebrow text-mute">Paris — Tokyo — Los Angeles</p>
+    </div>
+  </section>
 
-    <h2 class="mb-4 font-display text-[22px] font-semibold">Shop by category</h2>
-    <div class="category-marquee mb-16 overflow-hidden">
-      <div class="category-track flex w-max gap-4 pb-2">
+  <section class="border-b border-ink py-12">
+    <div class="mb-8 flex items-end justify-between px-4 md:px-8">
+      <h2 class="h-display text-[40px] md:text-[56px]">The <em>Index</em></h2>
+      <span class="eyebrow text-mute">({String(CATEGORIES.length).padStart(2, '0')}) Categories</span>
+    </div>
+    <div class="category-marquee overflow-hidden">
+      <div class="category-track flex w-max">
         {[false, true].map((duplicate) =>
-          CATEGORIES.map((c) => (
+          CATEGORIES.map((c, i) => (
             <a
               href={`/shop?category=${c.key}`}
-              class="group w-[140px] shrink-0"
+              class="group w-[220px] shrink-0 border-r border-hairline px-4 md:w-[260px]"
               aria-hidden={duplicate ? 'true' : undefined}
               tabindex={duplicate ? -1 : undefined}
             >
-              <div class="mb-2 h-[180px] overflow-hidden rounded-md bg-gradient-to-br from-secondary to-stone transition-transform duration-300 group-hover:-translate-y-1">
-                <img src={CATEGORY_IMAGES[c.key]} alt="" loading="lazy" class="size-full object-cover" />
+              <div class="mb-3 aspect-[3/4] overflow-hidden bg-surface-card">
+                <img src={CATEGORY_IMAGES[c.key]} alt="" loading="lazy" class="size-full object-cover grayscale transition duration-500 group-hover:scale-[1.04] group-hover:grayscale-0" />
               </div>
-              <span class="text-sm font-semibold">{c.label}</span>
+              <span aria-hidden="true" class="eyebrow mr-2 text-mute">{String(i + 1).padStart(2, '0')}</span>
+              <span class="link-line text-sm">{c.label}</span>
             </a>
           )),
         )}
       </div>
     </div>
+  </section>
 
-    <h2 id="trending" class="mb-4 scroll-mt-20 font-display text-[22px] font-semibold">Trending now</h2>
-    <div class="mb-16 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+  <section class="px-4 py-12 md:px-8">
+    <div class="mb-8 flex items-end justify-between border-b border-hairline pb-4">
+      <h2 id="trending" class="h-display scroll-mt-28 text-[40px] md:text-[56px]">Selected <em>pieces</em></h2>
+      <a href="/shop" class="eyebrow link-line">View all</a>
+    </div>
+    <div class="grid grid-cols-2 gap-x-4 md:grid-cols-3 lg:grid-cols-4">
       {featured.map((p, i) => <ProductCard product={p} index={i} />)}
     </div>
-  </div>
+  </section>
 
-  <section class="flex flex-wrap items-center justify-between gap-6 bg-surface-dark px-8 py-12 text-white">
-    <h2 class="font-display text-[28px] font-bold tracking-[-1.2px]">Free worldwide shipping on every order.</h2>
-    <a href="/shop" class="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink">Shop now</a>
+  <section class="flex flex-col items-start gap-8 bg-surface-dark px-4 py-20 text-canvas md:flex-row md:items-end md:justify-between md:px-8">
+    <h2 class="h-display max-w-[900px] text-[44px] md:text-[80px]">Free worldwide shipping on <em>every</em> order.</h2>
+    <a href="/shop" class="eyebrow inline-flex h-12 shrink-0 items-center bg-accent px-7 text-ink transition-colors hover:bg-canvas">Shop now</a>
   </section>
 </Layout>
