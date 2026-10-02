@@ -1,3 +1,6 @@
+# pinned so the project keeps its containers/volume (shop_pgdata) regardless of folder name
+name: shop
+
 services:
   db:
     image: postgres:17-alpine
