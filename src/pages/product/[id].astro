@@ -22,7 +22,7 @@ const related = await db.select().from(products)
     </div>
     <div class="reveal flex flex-col gap-6 p-6 md:sticky md:top-24 md:col-span-5 md:self-start md:p-10">
       <a href="/shop" class="eyebrow link-line self-start text-mute hover:text-ink">← Back to shop</a>
-      <span class="eyebrow text-mute">{CATEGORY_LABEL[product.category]}</span>
+      <a href={`/shop?gender=${product.gender}&category=${product.category}`} class="eyebrow link-line self-start text-mute hover:text-ink">{CATEGORY_LABEL[product.category]}</a>
       <h1 class="h-display text-[44px] md:text-[60px]">{product.name}</h1>
       <span class="font-mono text-xl">${product.price}</span>
       <p class="max-w-[420px] leading-relaxed text-body">{product.description}</p>
@@ -34,6 +34,7 @@ const related = await db.select().from(products)
         <dt>Dispatch</dt><dd class="text-ink">2–4 business days</dd>
         <dt>Returns</dt><dd class="text-ink">Within 30 days</dd>
       </dl>
+      <a href="/size-guide" class="eyebrow link-line self-start">Size guide →</a>
     </div>
   </div>
   {related.length > 0 && (

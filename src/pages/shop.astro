@@ -35,7 +35,7 @@ const genders = [['all', 'Everything'], ['women', "Women's"], ['men', "Men's"]];
 <Layout title={`${title} — DCS Y2K`}>
   <div class="px-4 py-10 md:px-8">
     <div class="mb-10 flex items-end justify-between gap-6 border-b border-ink pb-6">
-      <h1 class="h-display text-[48px] md:text-[88px]">{title}</h1>
+      <h1 class="h-display text-[48px] md:text-[88px]"><a href="/shop" title="Show everything" class="transition-opacity hover:opacity-60">{title}</a></h1>
       <span class="eyebrow shrink-0 text-mute">({String(items.length).padStart(2, '0')}) Pieces</span>
     </div>
     <div class="mb-3 flex flex-wrap items-center gap-2">

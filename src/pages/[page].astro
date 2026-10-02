@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CONTACT_EMAIL, INFO_PAGES, SIZE_TABLE } from '../lib/pages';
+import { SOCIAL_LINKS } from '../lib/catalog';
+
+const page = INFO_PAGES[Astro.params.page!];
+if (!page) return new Response(null, { status: 404 });
+---
+<Layout title={`${page.title} — DCS Y2K`}>
+  <div class="mx-auto max-w-[820px] p-6 py-16">
+    <p class="eyebrow mb-4 text-mute">{page.eyebrow}</p>
+    <h1 class="h-display mb-6 text-[56px] md:text-[72px]">{page.title}</h1>
+    <p class="mb-12 border-b border-ink pb-8 text-lg leading-relaxed text-body">{page.intro}</p>
+
+    {page.extra === 'size-table' && (
+      <table class="mb-12 w-full border-collapse font-mono text-sm">
+        <thead>
+          <tr class="eyebrow border-b border-ink text-left text-mute">
+            <th class="py-3 font-medium">Size</th><th class="py-3 font-medium">Chest</th><th class="py-3 font-medium">Waist</th><th class="py-3 font-medium">Hips</th>
+          </tr>
+        </thead>
+        <tbody>
+          {SIZE_TABLE.map((row) => (
+            <tr class="border-b border-hairline">{row.map((cell) => <td class="py-3">{cell}</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+
+    {page.extra === 'track-form' && (
+      <form data-track-form class="mb-12 flex flex-col gap-5 border border-ink p-6 md:p-8">
+        <label class="eyebrow flex flex-col gap-1 text-mute">
+          Order number
+          <input name="order" required placeholder="DCS-10234" class="h-12 border-b border-ink bg-transparent font-body text-base tracking-normal text-ink normal-case outline-none placeholder:text-ash" />
+        </label>
+        <label class="eyebrow flex flex-col gap-1 text-mute">
+          Email
+          <input name="email" type="email" required placeholder="you@example.com" class="h-12 border-b border-ink bg-transparent font-body text-base tracking-normal text-ink normal-case outline-none placeholder:text-ash" />
+        </label>
+        <button type="submit" class="eyebrow h-12 w-full bg-ink text-canvas transition-colors hover:bg-accent hover:text-ink">Track order</button>
+        <p data-track-status role="status" class="hidden border border-hairline p-3 text-sm text-body">
+          Online tracking isn’t available yet — email <a href={`mailto:${CONTACT_EMAIL}`} class="underline underline-offset-4">{CONTACT_EMAIL}</a> with your order number and we’ll reply with its status.
+        </p>
+      </form>
+    )}
+
+    {page.extra === 'contact' && (
+      <div class="mb-12 grid gap-px border border-ink bg-ink md:grid-cols-2">
+        <div class="bg-canvas p-6">
+          <p class="eyebrow mb-2 text-mute">Email</p>
+          <a href={`mailto:${CONTACT_EMAIL}`} class="link-line text-lg">{CONTACT_EMAIL}</a>
+        </div>
+        <div class="bg-canvas p-6">
+          <p class="eyebrow mb-2 text-mute">Social</p>
+          <div class="flex gap-4 text-lg">
+            {SOCIAL_LINKS.map((s) => <a href={s.href} target="_blank" rel="noopener noreferrer" class="link-line">{s.label}</a>)}
+          </div>
+        </div>
+      </div>
+    )}
+
+    <div class="flex flex-col gap-8 leading-relaxed text-body">
+      {page.sections.map((s) => (
+        <section>
+          <h2 class="h-display mb-3 text-[26px]">{s.title}</h2>
+          {s.body.map((p) => <p class="mb-2">{p}</p>)}
+        </section>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // The page is swapped in by view transitions, so bind on every page load.
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('[data-track-form]');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      form.querySelector('[data-track-status]')?.classList.remove('hidden');
+    });
+  });
+</script>

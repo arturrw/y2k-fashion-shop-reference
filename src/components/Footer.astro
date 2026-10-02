@@ -12,9 +12,9 @@ const ICONS: Record<string, string> = {
   <div class="grid grid-cols-2 gap-8 px-4 py-14 md:grid-cols-4 md:px-8">
     {FOOTER_COLUMNS.map((c) => (
       <div>
-        <h3 class="mb-3 text-sm font-semibold">{c.title}</h3>
-        <ul class="flex flex-col gap-2 text-sm text-mute">
-          {c.links.map((l) => <li><a href="#" class="hover:text-ink">{l}</a></li>)}
+        <h3 class="eyebrow mb-4 text-mute">{c.title}</h3>
+        <ul class="flex flex-col gap-2 text-sm">
+          {c.links.map((l) => <li><a href={l.href} class="link-line">{l.label}</a></li>)}
         </ul>
       </div>
     ))}
@@ -45,7 +45,7 @@ const ICONS: Record<string, string> = {
       <p>&copy; {new Date().getFullYear()} DCS Y2K. GDPR compliant.</p>
       <ul class="flex flex-wrap gap-x-6 gap-y-2">
         {LEGAL_LINKS.map((l) => (
-          <li><a href={l.href} class="hover:text-ink">{l.label}</a></li>
+          <li><a href={l.href} class="link-line hover:text-ink">{l.label}</a></li>
         ))}
       </ul>
     </div>

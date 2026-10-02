@@ -16,9 +16,32 @@ export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL'] as const;
 
 export const FOOTER_COLUMNS = [
-  { title: 'Shop', links: ['Women', 'Men', 'New drops', 'Accessories'] },
-  { title: 'Help', links: ['Shipping & returns', 'Size guide', 'Track my order', 'Contact us'] },
-  { title: 'About', links: ['Our story', 'Sustainability', 'Careers'] },
+  {
+    title: 'Shop',
+    links: [
+      { label: 'Women', href: '/shop?gender=women' },
+      { label: 'Men', href: '/shop?gender=men' },
+      { label: 'New drops', href: '/#trending' },
+      { label: 'Accessories', href: '/shop?category=accessories' },
+    ],
+  },
+  {
+    title: 'Help',
+    links: [
+      { label: 'Shipping & returns', href: '/shipping-returns' },
+      { label: 'Size guide', href: '/size-guide' },
+      { label: 'Track my order', href: '/track-order' },
+      { label: 'Contact us', href: '/contact' },
+    ],
+  },
+  {
+    title: 'About',
+    links: [
+      { label: 'Our story', href: '/about' },
+      { label: 'Sustainability', href: '/sustainability' },
+      { label: 'Careers', href: '/careers' },
+    ],
+  },
 ];
 
 export const SOCIAL_LINKS = [
