@@ -101,5 +101,5 @@ docs/              architecture, API, contributing, screenshots
 
 - **Demo reviews:** `scripts/reviews.ts` generates placeholder reviews. Remove them before taking real orders — fake reviews are illegal in many markets.
 - **Contact address:** `CONTACT_EMAIL` in `src/lib/pages.ts` is a placeholder.
-- **Images:** product and lookbook photos are hot-linked from Pinterest for the demo; replace them with images you own.
+- **Images:** product and lookbook photos are hot linked from Pinterest for the demo; replace them with images you own.
 - **Accounts and checkout** are UI only — there is no backend for them yet.
